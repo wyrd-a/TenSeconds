@@ -4,16 +4,28 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
+import flixel.ui.FlxButton;
 
+/**
+	Start screen
+**/
 class StartState extends FlxState
 {
 	override public function create()
 	{
 		super.create();
+		var startBg = new FlxSprite(0, 0);
+		startBg.loadGraphic(AssetPaths.dumbcat1__jpg);
+
+		var startButton = new FlxButton(0, 0, "Start", clickStart);
+		startButton.screenCenter();
+
+		add(startBg);
+		add(startButton);
 	}
 
-	override public function update(elapsed:Float)
+	function clickStart()
 	{
-		super.update(elapsed);
+		FlxG.switchState(new PlayState());
 	}
 }
