@@ -20,8 +20,7 @@ class PlayState extends FlxState
 	{
 		levelBG = new FlxSprite(FlxG.width / 3, FlxG.height / 3).loadGraphic(AssetPaths.Level1__png); // This is for debugging of the zoom
 		add(levelBG);
-		FlxG.camera.zoom = 3;
-		player = new Player(20, 20); // Create a new player
+		player = new Player(FlxG.width / 3, FlxG.height / 3); // Create a new player
 		add(player);
 		enemy = new Enemy(400, 400);
 		add(enemy);
@@ -29,9 +28,9 @@ class PlayState extends FlxState
 		add(weapon);
 
 		// debug text
-		weaponAngle = new FlxText(0, 0, 0, "Weapon Angle: ");
+		weaponAngle = new FlxText(FlxG.width / 3, FlxG.height / 3, 0, "Weapon Angle: ");
 		add(weaponAngle);
-		weaponTarget = new FlxText(0, 16, 0, "Target Angle: ");
+		weaponTarget = new FlxText(FlxG.width / 3, FlxG.height / 3 + 16, 0, "Target Angle: ");
 		add(weaponTarget);
 		super.create();
 	}
@@ -39,9 +38,9 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		enemy.trackPlayer(player.x, player.y);
+		enemy.trackPlayer(player);
 		weapon.move(player.x, player.y, player.velocity.x, player.velocity.y);
-		FlxG.collide(player, enemy, enemydies);
+		// FlxG.collide(player, enemy, enemydies);
 
 		// debug text
 		weaponAngle.text = "Weapon Angle: " + weapon.angle;
