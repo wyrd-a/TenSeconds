@@ -10,9 +10,15 @@ import flixel.FlxSubState;
 **/
 class BattleSubState extends FlxSubState
 {
-	override public function create() {}
+	override public function create()
+	{
+		super.create();
+	}
 
-	override public function update(elapsed:Float) {}
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+	}
 
 	private function handleInput()
 	{

@@ -14,7 +14,10 @@ class PauseSubState extends FlxSubState
 		add(startBg);
 	}
 
-	override public function update(elapsed:Float) {}
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+	}
 
 	private function handleInput()
 	{
