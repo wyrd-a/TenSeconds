@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
+import flixel.util.FlxColor;
 
 class PlayState extends FlxState
 {
@@ -16,6 +17,8 @@ class PlayState extends FlxState
 	var weaponTarget:FlxText;
 	var levelBG:FlxSprite;
 
+	var healthMeter:FlxSprite;
+
 	override public function create()
 	{
 		levelBG = new FlxSprite(FlxG.width / 3, FlxG.height / 3).loadGraphic(AssetPaths.Level1__png); // This is for debugging of the zoom
@@ -26,6 +29,9 @@ class PlayState extends FlxState
 		add(enemy);
 		weapon = new Weapon();
 		add(weapon);
+
+		healthMeter = new FlxSprite(0, 0).makeGraphic(200, 20, FlxColor.GREEN);
+		add(healthMeter);
 
 		// debug text
 		weaponAngle = new FlxText(FlxG.width / 3, FlxG.height / 3, 0, "Weapon Angle: ");
@@ -38,8 +44,9 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		uiUpdate();
 		enemy.trackPlayer(player);
-		weapon.move(player.x, player.y, player.velocity.x, player.velocity.y);
+		weapon.move(player);
 		// FlxG.collide(player, enemy, enemydies);
 
 		// debug text
@@ -52,5 +59,19 @@ class PlayState extends FlxState
 		objB.kill();
 		var zoomState:ZoomState = new ZoomState(0x99DAD6D6);
 		openSubState(zoomState);
+	}
+
+	function uiUpdate()
+	{
+		if (player.health > 0)
+		{
+			healthMeter.setGraphicSize(Std.int(player.health * 20), 20);
+			healthMeter.updateHitbox();
+			healthMeter.x = 0;
+		}
+		else
+		{
+			healthMeter.kill();
+		}
 	}
 }

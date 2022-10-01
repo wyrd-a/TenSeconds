@@ -7,6 +7,9 @@ import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import haxe.Timer;
 
+/**
+	This is the enemy. AI and damage dealing is handled here.
+**/
 class Enemy extends FlxSprite
 {
 	var VEL:Float = 50;
@@ -34,7 +37,7 @@ class Enemy extends FlxSprite
 	public function trackPlayer(player:FlxSprite)
 	{
 		target(player);
-		FlxG.collide(player, this);
+		FlxG.collide(player, this, playerHurt);
 		if (!isAttacking)
 		{
 			if (Math.abs(player.x - x) > Math.abs(player.y - y))
@@ -65,7 +68,7 @@ class Enemy extends FlxSprite
 			isAttacking = true;
 			velocity.x = 0;
 			velocity.y = 0;
-			color = FlxColor.GREEN;
+			color = 0x58D971;
 		}
 	}
 
@@ -83,8 +86,15 @@ class Enemy extends FlxSprite
 
 	function attack()
 	{
-		color = FlxColor.GREEN;
+		color = 0xF6FF00;
 		isAttacking = false;
 		chargeTimer = 0;
+		setGraphicSize(32, 32);
+		this.updateHitbox();
+	}
+
+	function playerHurt(objA:FlxSprite, objB:FlxSprite):Void
+	{
+		objA.health -= 1;
 	}
 }

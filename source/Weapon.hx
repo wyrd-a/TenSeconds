@@ -4,6 +4,9 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 
+/**
+	This is the weapon. Idk how it works.
+**/
 class Weapon extends FlxSprite
 {
 	var up:Bool;
@@ -33,24 +36,17 @@ class Weapon extends FlxSprite
 	}
 
 	// Keep weapon relative to player
-	public function move(playerX:Float, playerY:Float, playerVX:Float, playerVY:Float)
+	public function move(player:FlxSprite)
 	{
 		// control angle
-		targetAngle = angleControl(playerVX, playerVY);
+		targetAngle = angleControl(player);
 
-		if (angle < targetAngle + 180)
-		{
-			angularVelocity = 50;
-		}
-		else
-		{
-			angularVelocity = -50;
-		}
+		angularVelocity = 50;
 
-		x = (-20 * Math.sin(angle / 180 * Math.PI)) + playerX;
-		y = (20 * Math.cos(angle / 180 * Math.PI)) + playerY;
-		targetX = (-20 * Math.sin(targetAngle / 180 * Math.PI)) + playerX;
-		targetY = (20 * Math.cos(targetAngle / 180 * Math.PI)) + playerY;
+		x = (-20 * Math.sin(angle / 180 * Math.PI)) + player.x;
+		y = (20 * Math.cos(angle / 180 * Math.PI)) + player.y;
+		targetX = (-20 * Math.sin(targetAngle / 180 * Math.PI)) + player.x;
+		targetY = (20 * Math.cos(targetAngle / 180 * Math.PI)) + player.y;
 
 		if (angle < 0)
 		{
@@ -62,15 +58,15 @@ class Weapon extends FlxSprite
 		}
 	}
 
-	function angleControl(playerVX:Float, playerVY:Float):Float
+	function angleControl(player:FlxSprite):Float
 	{
-		if (playerVX > 0)
+		if (player.velocity.x > 0)
 		{
-			if (playerVY > 0)
+			if (player.velocity.y > 0)
 			{
 				return 135;
 			}
-			else if (playerVY < 0)
+			else if (player.velocity.y < 0)
 			{
 				return 45;
 			}
@@ -79,13 +75,13 @@ class Weapon extends FlxSprite
 				return 90;
 			}
 		}
-		else if (playerVX < 0)
+		else if (player.velocity.x < 0)
 		{
-			if (playerVY > 0)
+			if (player.velocity.y > 0)
 			{
 				return 225;
 			}
-			else if (playerVY < 0)
+			else if (player.velocity.y < 0)
 			{
 				return 315;
 			}
@@ -96,11 +92,11 @@ class Weapon extends FlxSprite
 		}
 		else
 		{
-			if (playerVY > 0)
+			if (player.velocity.y > 0)
 			{
 				return 180;
 			}
-			else if (playerVY < 0)
+			else if (player.velocity.y < 0)
 			{
 				return 0;
 			}
