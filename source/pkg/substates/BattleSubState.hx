@@ -1,7 +1,5 @@
 package pkg.substates;
 
-import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.FlxSubState;
 import pkg.room.Room;
 
@@ -11,7 +9,7 @@ import pkg.room.Room;
 **/
 class BattleSubState extends FlxSubState
 {
-	private var room:Room;
+	public var isPersistent:Bool = true;
 
 	override public function create()
 	{
@@ -23,13 +21,7 @@ class BattleSubState extends FlxSubState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-	}
 
-	private function handleInput()
-	{
-		if (FlxG.keys.pressed.ESCAPE)
-		{
-			// switch to pause state
-		}
+		trace("Updated in battle state");
 	}
 }
