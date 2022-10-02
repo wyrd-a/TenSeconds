@@ -47,9 +47,9 @@ class BattleSubState extends FlxSubState
 	override public function update(elapsed:Float)
 	{
 		this.checkHitboxes();
-		enemy.trackPlayer(player);
-		weapon.move(player, enemy);
-		ui.updateUI(player);
+		this.enemy.trackPlayer(player);
+		this.weapon.move(player, enemy);
+		this.ui.updateUI(player);
 
 		super.update(elapsed);
 		trace("Updated in battle state");
@@ -57,6 +57,6 @@ class BattleSubState extends FlxSubState
 
 	public function checkHitboxes()
 	{
-		room.checkWallHitboxes([player, enemy]);
+		this.room.checkWallHitboxes([player, enemy]);
 	}
 }

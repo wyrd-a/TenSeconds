@@ -83,6 +83,8 @@ class Room extends FlxSpriteGroup
 		}
 	}
 
+	private function addObjectsToRooms() {}
+
 	public function checkWallHitboxes(sprites:Array<FlxSprite>)
 	{
 		for (index => bound in this.wallBounds)
