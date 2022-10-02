@@ -24,7 +24,5 @@ class BattleSubState extends FlxSubState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
-		trace("Updated in battle state");
 	}
 }

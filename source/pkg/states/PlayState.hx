@@ -40,6 +40,7 @@ class PlayState extends FlxState
 	{
 		trace("Updated in play state");
 		this.handleInput();
+		this.returnToDefaultState();
 		super.update(elapsed);
 	}
 
@@ -58,6 +59,14 @@ class PlayState extends FlxState
 				this.closeSubState();
 				this.openSubState(this.prevSubState);
 			}
+		}
+	}
+
+	private function returnToDefaultState()
+	{
+		if (this.subState == null)
+		{
+			this.openSubState(this.battleSubState);
 		}
 	}
 }
