@@ -11,6 +11,7 @@ class Weapon extends FlxSprite
 {
 	var VEL:Float = 2;
 	var DIST:Float = 75;
+	var CHARGE:Float = 200;
 
 	public var targetAngle:Float;
 
@@ -64,18 +65,6 @@ class Weapon extends FlxSprite
 			}
 		}
 
-		// Weapon color change
-		if (Math.abs(angularVelocity) > 200)
-		{
-			animation.play("charged");
-			// color = 0x8871C2; // Swap this with graphical change
-		}
-		else
-		{
-			animation.play("uncharged");
-			// color = 0x030904; // Swap this with graphical change
-		}
-
 		// Weapon position on screen
 		x = (-1 * DIST * Math.sin(angle / 180 * Math.PI)) + player.x + (player.width / 2) - (width / 2);
 		y = (DIST * Math.cos(angle / 180 * Math.PI)) + player.y + (player.height / 2) - (height / 2);
@@ -90,7 +79,16 @@ class Weapon extends FlxSprite
 			angle = 0;
 		}
 
-		FlxG.collide(enemy, this, hurtEnemy); // hurt the enemy!
+		// Weapon charge state
+		if (Math.abs(angularVelocity) > CHARGE)
+		{
+			animation.play("charged");
+			FlxG.collide(enemy, this, hurtEnemy); // hurt the enemy!
+		}
+		else
+		{
+			animation.play("uncharged");
+		}
 	}
 
 	//**Calculates where the weapon is relative to the player and the weapon's rotational speed.**/

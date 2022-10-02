@@ -4,6 +4,7 @@ import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
+import flixel.text.FlxText;
 import pkg.enemy.Enemy;
 import pkg.enemy.Ghost;
 import pkg.player.Player;
@@ -21,7 +22,8 @@ class BattleSubState extends FlxSubState
 	var player:Player;
 	var enemy:Ghost;
 	var weapon:Weapon;
-	var ui:UI;
+	// var ui:UI;
+	var healthText:FlxText;
 
 	override public function create()
 	{
@@ -32,9 +34,11 @@ class BattleSubState extends FlxSubState
 		add(enemy);
 		weapon = new Weapon();
 		add(weapon);
-		ui = new UI(20, FlxG.height - 22);
-		add(ui);
+		// ui = new UI(20, FlxG.height - 22);
+		// add(ui);
 
+		healthText = new FlxText(40, 40);
+		add(healthText);
 		super.create();
 	}
 
@@ -42,8 +46,8 @@ class BattleSubState extends FlxSubState
 	{
 		enemy.trackPlayer(player);
 		weapon.move(player, enemy);
-		ui.updateUI(player);
-
+		// ui.updateUI(player);
+		healthText.text = Std.string(enemy.health);
 		super.update(elapsed);
 		// trace("Updated in battle state");
 	}

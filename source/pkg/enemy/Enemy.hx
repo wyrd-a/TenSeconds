@@ -12,18 +12,11 @@ import haxe.Timer;
 import haxe.macro.Type.AbstractType;
 import openfl.display.Graphics;
 
-enum EnemyType
-{
-	GHOST;
-	BAT;
-}
-
 /**
 	This is the enemy. AI and damage dealing is handled here.
 **/
 class Enemy extends FlxSprite
 {
-	var MAXSPEED:Float = 80;
 	var isCharging:Bool = false;
 	var chargeTimer:Float = 0;
 	var isAttacking:Bool = false;
@@ -35,9 +28,12 @@ class Enemy extends FlxSprite
 	var originalX:Int;
 	var originalY:Int;
 
+	// Variables meant to be changed for different enemies
 	var tooCloseDist:Int;
 	var attackCD:Int;
 	var chargeCD:Int;
+	var iframeCD:Int;
+	var maxSpeed:Float = 80;
 
 	// immunity frames
 	var oldHealth:Float;
@@ -58,6 +54,7 @@ class Enemy extends FlxSprite
 
 	override public function update(elapsed:Float):Void
 	{
+		deathCheck();
 		super.update(elapsed);
 	}
 
@@ -83,11 +80,11 @@ class Enemy extends FlxSprite
 		}
 		else if (tooClose(player)) // move towards player
 		{
-			approach(player, -1 * MAXSPEED);
+			approach(player, -1 * maxSpeed);
 		}
 		else
 		{
-			approach(player, MAXSPEED);
+			approach(player, maxSpeed);
 		}
 	}
 
@@ -215,18 +212,18 @@ class Enemy extends FlxSprite
 
 	function deathCheck()
 	{
-		if (health < oldHealth)
+		if (health < 0)
 		{
-			oldHealth = health;
+			kill();
+		}
+		else if ((health != oldHealth && !iframes))
+		{
 			iframes = true;
+			oldHealth = health;
 		}
 		if (iframes)
 		{
 			immunity();
-		}
-		if (health < 0)
-		{
-			kill();
 		}
 	}
 
@@ -238,7 +235,7 @@ class Enemy extends FlxSprite
 			iframeCounter = Timer.stamp();
 			flashTimer = Timer.stamp();
 		}
-		if (Timer.stamp() - iframeCounter > 2) // This is how long they're immune
+		if (Timer.stamp() - iframeCounter > iframeCD) // This is how long they're immune
 		{
 			iframes = false;
 			iframeCounter = 0;

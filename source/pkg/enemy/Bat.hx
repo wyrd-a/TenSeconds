@@ -8,21 +8,19 @@ import haxe.Timer;
 /**
 	This is the Ghost. It uses an AOE attack when it gets close.
 **/
-class Ghost extends Enemy
+class Bat extends Enemy
 {
 	public function new(x:Float = 0, y:Float = 0)
 	{
-		super(x, y);
-
 		// Ghost specific stuff
 		tooCloseDist = 0;
 		attackCD = 1;
 		chargeCD = 1;
 		iframeCD = 1;
-		maxSpeed = 80;
-		health = 20;
-		oldHealth = health; // for tracking i-frames
+		maxSpeed = 100;
+		health = 1;
 
+		super(x, y);
 		loadGraphic(AssetPaths.Ghost__png, true, 18, 39);
 		createAnimations();
 		animation.play("right");
