@@ -10,6 +10,8 @@ import flixel.FlxSubState;
 **/
 class BattleSubState extends FlxSubState
 {
+	public var isPersistent:Bool = true;
+
 	override public function create()
 	{
 		super.create();
@@ -18,13 +20,7 @@ class BattleSubState extends FlxSubState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-	}
 
-	private function handleInput()
-	{
-		if (FlxG.keys.pressed.ESCAPE)
-		{
-			// switch to pause state
-		}
+		trace("Updated in battle state");
 	}
 }
