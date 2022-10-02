@@ -27,7 +27,7 @@ class Weapon extends FlxSprite
 	{
 		super(x, y);
 		makeGraphic(16, 16, FlxColor.GRAY);
-		angularDrag = 20;
+		angularDrag = 60;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -41,7 +41,41 @@ class Weapon extends FlxSprite
 		// control angle
 		targetAngle = angleControl(player);
 
-		angularVelocity = 50;
+		if (targetAngle == 69420)
+		{
+			angularAcceleration = 0;
+		}
+		else if (angle > targetAngle)
+		{
+			if (angle > targetAngle + 180)
+			{
+				angularAcceleration = 200;
+			}
+			else
+			{
+				angularAcceleration = -200;
+			}
+		}
+		else if (angle < targetAngle)
+		{
+			if (angle > targetAngle - 180)
+			{
+				angularAcceleration = 200;
+			}
+			else
+			{
+				angularAcceleration = -200;
+			}
+		}
+
+		if (angularVelocity > 200)
+		{
+			color = 0x58D971;
+		}
+		else
+		{
+			color = 0x030904;
+		}
 
 		x = (-20 * Math.sin(angle / 180 * Math.PI)) + player.x;
 		y = (20 * Math.cos(angle / 180 * Math.PI)) + player.y;
@@ -102,7 +136,7 @@ class Weapon extends FlxSprite
 			}
 			else
 			{
-				return angle;
+				return 69420;
 			}
 		}
 	}
