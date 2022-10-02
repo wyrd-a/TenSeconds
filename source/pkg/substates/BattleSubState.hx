@@ -11,11 +11,14 @@ class BattleSubState extends FlxSubState
 {
 	public var isPersistent:Bool = true;
 
+	private var room:Room;
+
 	override public function create()
 	{
 		super.create();
 
 		this.room = new Room();
+		add(this.room);
 	}
 
 	override public function update(elapsed:Float)
