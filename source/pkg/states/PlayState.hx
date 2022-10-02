@@ -38,7 +38,7 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		trace("Updated in play state");
+		// trace("Updated in play state");
 		this.handleInput();
 		this.returnToDefaultState();
 		super.update(elapsed);

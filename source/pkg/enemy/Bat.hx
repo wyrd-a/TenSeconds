@@ -12,16 +12,17 @@ class Bat extends Enemy
 {
 	public function new(x:Float = 0, y:Float = 0)
 	{
+		super(x, y);
+
 		// Ghost specific stuff
 		tooCloseDist = 0;
 		attackCD = 1;
 		chargeCD = 1;
 		iframeCD = 1;
 		maxSpeed = 100;
-		health = 1;
+		health = 5;
 
-		super(x, y);
-		loadGraphic(AssetPaths.Ghost__png, true, 18, 39);
+		loadGraphic(AssetPaths.bat__png, true, 25, 22);
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
@@ -85,7 +86,7 @@ class Bat extends Enemy
 
 	function createAnimations()
 	{
-		animation.add("right", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], animRate, true, false, false);
-		animation.add("left", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], animRate, true, true, false);
+		animation.add("right", [0, 1, 2, 3, 4, 5, 6], animRate, true, true, false);
+		animation.add("left", [0, 1, 2, 3, 4, 5, 6], animRate, true, false, false);
 	}
 }

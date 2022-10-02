@@ -36,7 +36,7 @@ class Player extends FlxSprite
 		setGraphicSize(72, 72);
 		createAnimations();
 		health = 5; // sets player's health
-		oldHealth = health; // for tracking i-frames?
+		oldHealth = health; // for tracking i-frames
 	}
 
 	override public function update(elapsed:Float):Void
