@@ -1,7 +1,6 @@
 package pkg.substates;
 
 import AssetPaths;
-import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
