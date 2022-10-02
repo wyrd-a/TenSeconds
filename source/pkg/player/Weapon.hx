@@ -1,4 +1,4 @@
-package;
+package pkg.player;
 
 import flixel.FlxG;
 import flixel.FlxSprite;

@@ -1,5 +1,6 @@
-package;
+package pkg.enemy;
 
+import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
