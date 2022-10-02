@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import haxe.Timer;
 
@@ -23,7 +24,11 @@ class Player extends FlxSprite
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		makeGraphic(16, 16, FlxColor.GREEN);
+		loadGraphic(AssetPaths.Player2__png);
+		scale.set(2, 2);
+		offset.set(10, 10);
+		updateHitbox();
+		setGraphicSize(54, 0);
 		health = 5; // sets player's health
 		oldHealth = health; // for tracking i-frames?
 	}

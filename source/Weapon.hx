@@ -10,6 +10,7 @@ import flixel.util.FlxColor;
 class Weapon extends FlxSprite
 {
 	var VEL:Float = 2;
+	var DIST:Float = 100;
 
 	public var targetAngle:Float;
 
@@ -26,10 +27,12 @@ class Weapon extends FlxSprite
 	}
 
 	// Keep weapon relative to player
-	public function move(player:FlxSprite)
+	public function move(player:FlxSprite, enemy:FlxSprite)
 	{
 		// control angle
 		targetAngle = angleControl(player);
+
+		FlxG.collide(enemy, this, hurtEnemy);
 
 		// choose angular speed
 		if (targetAngle == 69420)
@@ -59,6 +62,7 @@ class Weapon extends FlxSprite
 			}
 		}
 
+		// Weapon color change
 		if (Math.abs(angularVelocity) > 200)
 		{
 			color = 0x8871C2;
@@ -68,8 +72,9 @@ class Weapon extends FlxSprite
 			color = 0x030904;
 		}
 
-		x = (-20 * Math.sin(angle / 180 * Math.PI)) + player.x;
-		y = (20 * Math.cos(angle / 180 * Math.PI)) + player.y;
+		// Weapon position on screen
+		x = (-1 * DIST * Math.sin(angle / 180 * Math.PI)) + player.x + (player.width / 2);
+		y = (DIST * Math.cos(angle / 180 * Math.PI)) + player.y + (player.height / 2);
 
 		// Keep angle between 360 and 0
 		if (angle < 0)
@@ -130,5 +135,10 @@ class Weapon extends FlxSprite
 				return 69420;
 			}
 		}
+	}
+
+	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
+	{
+		objA.health -= 1;
 	}
 }

@@ -12,7 +12,7 @@ import haxe.Timer;
 **/
 class Enemy extends FlxSprite
 {
-	var VEL:Float = 50;
+	var MAXSPEED:Float = 80;
 	var isCharging:Bool = false;
 	var chargeTimer:Float = 0;
 	var isAttacking:Bool = false;
@@ -24,10 +24,15 @@ class Enemy extends FlxSprite
 	var originalX:Int;
 	var originalY:Int;
 
-	public function new(x:Float = 0, y:Float = 0)
+	var CLOSEDISTANCE:Int;
+
+	public function new(x:Float = 0, y:Float = 0, CLOSEDISTANCE:Int = 0)
 	{
 		super(x, y);
-		makeGraphic(16, 16, FlxColor.BLUE);
+		loadGraphic(AssetPaths.Enemy1__png);
+		setGraphicSize(Std.int(3 * width), 0);
+		updateHitbox();
+		health = 5;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -45,6 +50,7 @@ class Enemy extends FlxSprite
 
 		// collide with player/deal damage
 		FlxG.overlap(player, this, playerHurt);
+		FlxG.collide(player, this);
 
 		if (isAttacking) // check to see if enemy is attacking
 		{
@@ -54,39 +60,23 @@ class Enemy extends FlxSprite
 		{
 			chargeAttack();
 		}
-		else // move towards player
+		else if (tooClose(player)) // move towards player
 		{
-			if (Math.abs(player.x - x) > Math.abs(player.y - y))
-			{
-				velocity.y = 0;
-				if (player.x > x)
-					velocity.x = VEL;
-				else
-					velocity.x = -1 * VEL;
-			}
-			else
-			{
-				velocity.x = 0;
-				if (player.y > y)
-				{
-					velocity.y = VEL;
-				}
-				else
-				{
-					velocity.y = -1 * VEL;
-				}
-			}
+			approach(player, -1 * MAXSPEED);
+		}
+		else
+		{
+			approach(player, MAXSPEED);
 		}
 	}
 
 	function target(player:FlxSprite)
 	{
-		if (FlxMath.distanceBetween(player, this) < 28)
+		if (FlxMath.distanceBetween(player, this) < 80)
 		{
 			isCharging = true;
 			velocity.x = 0;
 			velocity.y = 0;
-			color = 0x58D971;
 		}
 	}
 
@@ -96,6 +86,7 @@ class Enemy extends FlxSprite
 		if (chargeTimer == 0)
 		{
 			chargeTimer = Timer.stamp();
+			loadGraphic(AssetPaths.Enemy2__png);
 		}
 		if (Timer.stamp() - chargeTimer > 3)
 		{
@@ -106,24 +97,24 @@ class Enemy extends FlxSprite
 
 	function attack(player:FlxSprite)
 	{
-		color = 0xF6FF00;
 		chargeTimer = 0;
 		if (attackTimer == 0)
 		{
+			loadGraphic(AssetPaths.Enemy1__png);
 			attackTimer = Timer.stamp();
 			if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Calculate where player is relative to enemy (attack in 4 cardinal directions)
 			{
 				originalY = 0;
 				if (player.x > x)
 				{
-					setGraphicSize(32, 16); // Extend hitbox to the right
+					setGraphicSize(108, 20 * 3); // Extend hitbox to the right
 					originalX = 0;
 				}
 				else
 				{
-					setGraphicSize(32, 16); // Extend hitbox to the left
-					x -= 16;
-					originalX = 16;
+					setGraphicSize(108, 20 * 3); // Extend hitbox to the left
+					x -= 54;
+					originalX = 54;
 				}
 			}
 			else
@@ -131,14 +122,14 @@ class Enemy extends FlxSprite
 				originalX = 0;
 				if (player.y > y)
 				{
-					setGraphicSize(16, 32); // Extend hitbox upward
+					setGraphicSize(18 * 3, 120); // Extend hitbox upward
 					originalY = 0;
 				}
 				else
 				{
-					setGraphicSize(16, 32); // Extend hitbox downward
-					y -= 16;
-					originalY = 16;
+					setGraphicSize(18 * 3, 120); // Extend hitbox downward
+					y -= 60;
+					originalY = 60;
 				}
 			}
 			updateHitbox();
@@ -148,7 +139,7 @@ class Enemy extends FlxSprite
 		{
 			isAttacking = false;
 			attackTimer = 0;
-			setGraphicSize(16, 16);
+			setGraphicSize(18 * 3, 20 * 3);
 			x += originalX;
 			y += originalY;
 			updateHitbox();
@@ -158,5 +149,50 @@ class Enemy extends FlxSprite
 	function playerHurt(objA:FlxSprite, objB:FlxSprite):Void
 	{
 		objA.health -= 1;
+	}
+
+	/**Move the enemy. Positive vel moves towards player, negative vel moves away.**/
+	function approach(player:FlxSprite, vel:Float)
+	{
+		if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Is the player further away in x or y
+		{
+			velocity.y = 0;
+			if (player.x > x) // Move positive or negative x
+				velocity.x = vel;
+			else
+				velocity.x = -1 * vel;
+		}
+		else
+		{
+			velocity.x = 0;
+			if (player.y > y) // move positive or negative y
+			{
+				velocity.y = vel;
+			}
+			else
+			{
+				velocity.y = -1 * vel;
+			}
+		}
+	}
+
+	function tooClose(player:FlxSprite)
+	{
+		if (FlxMath.distanceBetween(player, this) < CLOSEDISTANCE)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	function deathCheck()
+	{
+		if (health < 0)
+		{
+			kill();
+		}
 	}
 }
