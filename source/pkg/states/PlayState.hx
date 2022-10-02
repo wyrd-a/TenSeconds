@@ -1,10 +1,8 @@
 package pkg.states;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxSubState;
-import js.html.SelectElement;
 import pkg.substates.BattleSubState;
 import pkg.substates.PauseSubState;
 import pkg.substates.RewardSubState;
