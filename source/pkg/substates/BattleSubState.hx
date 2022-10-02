@@ -1,7 +1,6 @@
 package pkg.substates;
 
 import AssetPaths;
-import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
@@ -36,9 +35,6 @@ class BattleSubState extends FlxSubState
 		add(ui);
 
 		super.create();
-
-		this.room = new Room();
-		add(this.room);
 	}
 
 	override public function update(elapsed:Float)
