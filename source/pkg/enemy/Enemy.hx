@@ -4,9 +4,19 @@ import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
+import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.tile.FlxTilemap.GraphicAuto;
 import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import haxe.Timer;
+import haxe.macro.Type.AbstractType;
+import openfl.display.Graphics;
+
+enum EnemyType
+{
+	GHOST;
+	BAT;
+}
 
 /**
 	This is the enemy. AI and damage dealing is handled here.
@@ -25,7 +35,9 @@ class Enemy extends FlxSprite
 	var originalX:Int;
 	var originalY:Int;
 
-	var CLOSEDISTANCE:Int;
+	var tooCloseDist:Int;
+	var attackCD:Int;
+	var chargeCD:Int;
 
 	// immunity frames
 	var oldHealth:Float;
@@ -33,13 +45,15 @@ class Enemy extends FlxSprite
 	var iframeCounter:Float = 0;
 	var flashTimer:Float = 0;
 
-	public function new(x:Float = 0, y:Float = 0, CLOSEDISTANCE:Int = 0)
+	var animRate:Int = 8;
+
+	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(AssetPaths.Enemy1__png);
+		makeGraphic(64, 64, FlxColor.GREEN);
+		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
-		health = 20;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -93,9 +107,8 @@ class Enemy extends FlxSprite
 		if (chargeTimer == 0)
 		{
 			chargeTimer = Timer.stamp();
-			loadGraphic(AssetPaths.Enemy2__png);
 		}
-		if (Timer.stamp() - chargeTimer > 3)
+		if (Timer.stamp() - chargeTimer > chargeCD)
 		{
 			isAttacking = true;
 			isCharging = false;
@@ -107,7 +120,6 @@ class Enemy extends FlxSprite
 		chargeTimer = 0;
 		if (attackTimer == 0)
 		{
-			loadGraphic(AssetPaths.Enemy1__png);
 			attackTimer = Timer.stamp();
 			if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Calculate where player is relative to enemy (attack in 4 cardinal directions)
 			{
@@ -142,7 +154,7 @@ class Enemy extends FlxSprite
 			updateHitbox();
 		}
 
-		if (Timer.stamp() - attackTimer > 2) // keep hitbox active for 2 seconds
+		if (Timer.stamp() - attackTimer > attackCD) // keep hitbox active for 2 seconds
 		{
 			isAttacking = false;
 			attackTimer = 0;
@@ -165,9 +177,15 @@ class Enemy extends FlxSprite
 		{
 			velocity.y = 0;
 			if (player.x > x) // Move positive or negative x
+			{
 				velocity.x = vel;
+				animation.play("right");
+			}
 			else
+			{
 				velocity.x = -1 * vel;
+				animation.play("left");
+			}
 		}
 		else
 		{
@@ -185,7 +203,7 @@ class Enemy extends FlxSprite
 
 	function tooClose(player:FlxSprite)
 	{
-		if (FlxMath.distanceBetween(player, this) < CLOSEDISTANCE)
+		if (FlxMath.distanceBetween(player, this) < tooCloseDist)
 		{
 			return true;
 		}

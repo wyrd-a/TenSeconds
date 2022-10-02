@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import pkg.enemy.Enemy;
+import pkg.enemy.Ghost;
 import pkg.player.Player;
 import pkg.player.UI;
 import pkg.player.Weapon;
@@ -19,7 +20,7 @@ class BattleSubState extends FlxSubState
 	public var isPersistent:Bool = true;
 
 	var player:Player;
-	var enemy:Enemy;
+	var enemy:Ghost;
 	var weapon:Weapon;
 	var ui:UI;
 
@@ -28,8 +29,8 @@ class BattleSubState extends FlxSubState
 		// Things with logic tied to them
 		player = new Player(200, 200);
 		add(player);
-		enemy = new Enemy(400, 400);
-		// add(enemy);
+		enemy = new Ghost(400, 400);
+		add(enemy);
 		weapon = new Weapon();
 		add(weapon);
 		ui = new UI(20, FlxG.height - 22);
