@@ -110,29 +110,34 @@ class Player extends FlxSprite
 		}
 		if (iframes)
 		{
-			health = oldHealth;
-			if (iframeCounter == 0)
+			immunity();
+		}
+	}
+
+	function immunity()
+	{
+		health = oldHealth;
+		if (iframeCounter == 0)
+		{
+			iframeCounter = Timer.stamp();
+			flashTimer = Timer.stamp();
+		}
+		if (Timer.stamp() - iframeCounter > 2)
+		{
+			iframes = false;
+			iframeCounter = 0;
+			alpha = 1;
+		}
+		else if (Timer.stamp() - flashTimer > .1)
+		{
+			flashTimer = Timer.stamp();
+			if (alpha == 0.5)
 			{
-				iframeCounter = Timer.stamp();
-				flashTimer = Timer.stamp();
-			}
-			if (Timer.stamp() - iframeCounter > 2)
-			{
-				iframes = false;
-				iframeCounter = 0;
 				alpha = 1;
 			}
-			else if (Timer.stamp() - flashTimer > .1)
+			else
 			{
-				flashTimer = Timer.stamp();
-				if (alpha == 0.5)
-				{
-					alpha = 1;
-				}
-				else
-				{
-					alpha = 0.5;
-				}
+				alpha = 0.5;
 			}
 		}
 	}

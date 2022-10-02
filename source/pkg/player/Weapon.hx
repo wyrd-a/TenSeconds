@@ -32,8 +32,6 @@ class Weapon extends FlxSprite
 		// control angle
 		targetAngle = angleControl(player);
 
-		FlxG.collide(enemy, this, hurtEnemy);
-
 		// choose angular speed
 		if (targetAngle == 69420)
 		{
@@ -85,6 +83,8 @@ class Weapon extends FlxSprite
 		{
 			angle = 0;
 		}
+
+		FlxG.collide(enemy, this, hurtEnemy); // hurt the enemy!
 	}
 
 	//**Calculates where the weapon is relative to the player and the weapon's rotational speed.**/
@@ -140,5 +140,6 @@ class Weapon extends FlxSprite
 	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
 	{
 		objA.health -= 1;
+		objB.health -= 1;
 	}
 }

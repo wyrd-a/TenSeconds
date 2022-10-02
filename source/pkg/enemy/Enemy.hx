@@ -27,13 +27,19 @@ class Enemy extends FlxSprite
 
 	var CLOSEDISTANCE:Int;
 
+	// immunity frames
+	var oldHealth:Float;
+	var iframes:Bool = false;
+	var iframeCounter:Float = 0;
+	var flashTimer:Float = 0;
+
 	public function new(x:Float = 0, y:Float = 0, CLOSEDISTANCE:Int = 0)
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.Enemy1__png);
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
-		health = 5;
+		health = 20;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -191,9 +197,46 @@ class Enemy extends FlxSprite
 
 	function deathCheck()
 	{
+		if (health < oldHealth)
+		{
+			oldHealth = health;
+			iframes = true;
+		}
+		if (iframes)
+		{
+			immunity();
+		}
 		if (health < 0)
 		{
 			kill();
+		}
+	}
+
+	function immunity()
+	{
+		health = oldHealth;
+		if (iframeCounter == 0)
+		{
+			iframeCounter = Timer.stamp();
+			flashTimer = Timer.stamp();
+		}
+		if (Timer.stamp() - iframeCounter > 2) // This is how long they're immune
+		{
+			iframes = false;
+			iframeCounter = 0;
+			alpha = 1;
+		}
+		else if (Timer.stamp() - flashTimer > .1)
+		{
+			flashTimer = Timer.stamp();
+			if (alpha == 0.5)
+			{
+				alpha = 1;
+			}
+			else
+			{
+				alpha = 0.5;
+			}
 		}
 	}
 }
