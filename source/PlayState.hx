@@ -21,12 +21,13 @@ class PlayState extends FlxState
 
 	override public function create()
 	{
-		levelBG = new FlxSprite(FlxG.width / 3, FlxG.height / 3).loadGraphic(AssetPaths.Level1__png); // This is for debugging of the zoom
+		levelBG = new FlxSprite(FlxG.width / 3, FlxG.height / 3).loadGraphic(AssetPaths.Level1__png);
+		levelBG.setGraphicSize(864, 0);
 		add(levelBG);
 		player = new Player(FlxG.width / 3, FlxG.height / 3); // Create a new player
 		add(player);
 		enemy = new Enemy(400, 400);
-		add(enemy);
+		// add(enemy);
 		weapon = new Weapon();
 		add(weapon);
 
