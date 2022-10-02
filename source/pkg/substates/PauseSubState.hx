@@ -25,11 +25,5 @@ class PauseSubState extends FlxSubState
 		super.update(elapsed);
 
 		trace("Updated pause substate");
-
-		if (FlxG.keys.pressed.H)
-		{
-			trace("Here");
-			close();
-		}
 	}
 }
