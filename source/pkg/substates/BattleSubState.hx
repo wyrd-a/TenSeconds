@@ -18,8 +18,6 @@ class BattleSubState extends FlxSubState
 {
 	public var isPersistent:Bool = true;
 
-	var roomBG:FlxSprite;
-
 	var player:Player;
 	var enemy:Enemy;
 	var weapon:Weapon;
@@ -27,16 +25,11 @@ class BattleSubState extends FlxSubState
 
 	override public function create()
 	{
-		// These look nice
-		roomBG = new FlxSprite(0, 0).loadGraphic(AssetPaths.level1__png);
-		roomBG.setGraphicSize(Std.int(3 * roomBG.width), 0);
-		add(roomBG);
-
 		// Things with logic tied to them
 		player = new Player(200, 200);
 		add(player);
 		enemy = new Enemy(400, 400);
-		add(enemy);
+		// add(enemy);
 		weapon = new Weapon();
 		add(weapon);
 		ui = new UI(20, FlxG.height - 22);
