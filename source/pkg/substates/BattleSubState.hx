@@ -2,10 +2,12 @@ package pkg.substates;
 
 import AssetPaths;
 import AssetPaths;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import pkg.enemy.Enemy;
 import pkg.player.Player;
+import pkg.player.UI;
 import pkg.player.Weapon;
 
 /**
@@ -21,6 +23,7 @@ class BattleSubState extends FlxSubState
 	var player:Player;
 	var enemy:Enemy;
 	var weapon:Weapon;
+	var ui:UI;
 
 	override public function create()
 	{
@@ -36,6 +39,8 @@ class BattleSubState extends FlxSubState
 		add(enemy);
 		weapon = new Weapon();
 		add(weapon);
+		ui = new UI(20, FlxG.height - 22);
+		add(ui);
 
 		super.create();
 	}
@@ -44,8 +49,9 @@ class BattleSubState extends FlxSubState
 	{
 		enemy.trackPlayer(player);
 		weapon.move(player, enemy);
+		ui.updateUI(player);
 
 		super.update(elapsed);
-		trace("Updated in battle state");
+		// trace("Updated in battle state");
 	}
 }

@@ -65,11 +65,11 @@ class Weapon extends FlxSprite
 		// Weapon color change
 		if (Math.abs(angularVelocity) > 200)
 		{
-			color = 0x8871C2;
+			color = 0x8871C2; // Swap this with graphical change
 		}
 		else
 		{
-			color = 0x030904;
+			color = 0x030904; // Swap this with graphical change
 		}
 
 		// Weapon position on screen
