@@ -1,4 +1,4 @@
-package;
+package pkg.player;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -10,14 +10,18 @@ import flixel.util.FlxColor;
 class Weapon extends FlxSprite
 {
 	var VEL:Float = 2;
-	var DIST:Float = 100;
+	var DIST:Float = 75;
 
 	public var targetAngle:Float;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		makeGraphic(16, 16, FlxColor.GRAY);
+		loadGraphic(AssetPaths.weapon__png, true, 9, 27);
+		animation.add("uncharged", [2], 60, true, false, true);
+		animation.add("charged", [1], 60, true, false, true);
+		setGraphicSize(27, 0);
+		updateHitbox();
 		angularDrag = 400;
 	}
 
@@ -31,8 +35,6 @@ class Weapon extends FlxSprite
 	{
 		// control angle
 		targetAngle = angleControl(player);
-
-		FlxG.collide(enemy, this, hurtEnemy);
 
 		// choose angular speed
 		if (targetAngle == 69420)
@@ -65,16 +67,18 @@ class Weapon extends FlxSprite
 		// Weapon color change
 		if (Math.abs(angularVelocity) > 200)
 		{
-			color = 0x8871C2;
+			animation.play("charged");
+			// color = 0x8871C2; // Swap this with graphical change
 		}
 		else
 		{
-			color = 0x030904;
+			animation.play("uncharged");
+			// color = 0x030904; // Swap this with graphical change
 		}
 
 		// Weapon position on screen
-		x = (-1 * DIST * Math.sin(angle / 180 * Math.PI)) + player.x + (player.width / 2);
-		y = (DIST * Math.cos(angle / 180 * Math.PI)) + player.y + (player.height / 2);
+		x = (-1 * DIST * Math.sin(angle / 180 * Math.PI)) + player.x + (player.width / 2) - (width / 2);
+		y = (DIST * Math.cos(angle / 180 * Math.PI)) + player.y + (player.height / 2) - (height / 2);
 
 		// Keep angle between 360 and 0
 		if (angle < 0)
@@ -85,6 +89,8 @@ class Weapon extends FlxSprite
 		{
 			angle = 0;
 		}
+
+		FlxG.collide(enemy, this, hurtEnemy); // hurt the enemy!
 	}
 
 	//**Calculates where the weapon is relative to the player and the weapon's rotational speed.**/
@@ -140,5 +146,6 @@ class Weapon extends FlxSprite
 	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
 	{
 		objA.health -= 1;
+		objB.health -= 1;
 	}
 }

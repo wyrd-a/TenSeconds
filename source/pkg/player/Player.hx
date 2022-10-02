@@ -1,4 +1,4 @@
-package;
+package pkg.player;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -16,19 +16,25 @@ class Player extends FlxSprite
 	var left:Bool;
 	var right:Bool;
 	var VEL:Float = 100;
+
+	// immunity stuff
 	var oldHealth:Float;
 	var iframes:Bool = false;
 	var iframeCounter:Float = 0;
 	var flashTimer:Float = 0;
 
+	// animation stuff
+	var animationNumber:Int;
+	var animRate:Int = 8;
+
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(AssetPaths.Player2__png);
-		scale.set(2, 2);
+		loadGraphic(AssetPaths.player_move__png, true, 24, 24);
 		offset.set(10, 10);
 		updateHitbox();
-		setGraphicSize(54, 0);
+		setGraphicSize(72, 72);
+		createAnimations();
 		health = 5; // sets player's health
 		oldHealth = health; // for tracking i-frames?
 	}
@@ -57,10 +63,12 @@ class Player extends FlxSprite
 		else if (down)
 		{
 			velocity.y = VEL;
+			animationNumber = 5;
 		}
 		else if (up)
 		{
 			velocity.y = -1 * VEL;
+			animationNumber = 1;
 		}
 
 		// Left/Right speed
@@ -69,10 +77,42 @@ class Player extends FlxSprite
 		else if (right)
 		{
 			velocity.x = VEL;
+			animationNumber = 3;
 		}
 		else if (left)
 		{
 			velocity.x = -1 * VEL;
+			animationNumber = 7;
+		}
+
+		// Diagnol speed control
+		if (up && right)
+		{
+			velocity.scale(0.707);
+			animationNumber = 2;
+		}
+		else if (up && left)
+		{
+			velocity.scale(0.707);
+			animationNumber = 6;
+		}
+		else if (down && right)
+		{
+			velocity.scale(0.707);
+			animationNumber = 4;
+		}
+		else if (down && left)
+		{
+			velocity.scale(0.707);
+			animationNumber = 8;
+		}
+		if ((velocity.x != 0) || (velocity.y != 0))
+		{
+			playAnimation(animationNumber);
+		}
+		else
+		{
+			playIdleAnimation(animationNumber);
 		}
 	}
 
@@ -110,30 +150,104 @@ class Player extends FlxSprite
 		}
 		if (iframes)
 		{
-			health = oldHealth;
-			if (iframeCounter == 0)
+			immunity();
+		}
+	}
+
+	function immunity()
+	{
+		health = oldHealth;
+		if (iframeCounter == 0)
+		{
+			iframeCounter = Timer.stamp();
+			flashTimer = Timer.stamp();
+		}
+		if (Timer.stamp() - iframeCounter > 2)
+		{
+			iframes = false;
+			iframeCounter = 0;
+			alpha = 1;
+		}
+		else if (Timer.stamp() - flashTimer > .1)
+		{
+			flashTimer = Timer.stamp();
+			if (alpha == 0.5)
 			{
-				iframeCounter = Timer.stamp();
-				flashTimer = Timer.stamp();
-			}
-			if (Timer.stamp() - iframeCounter > 2)
-			{
-				iframes = false;
-				iframeCounter = 0;
 				alpha = 1;
 			}
-			else if (Timer.stamp() - flashTimer > .1)
+			else
 			{
-				flashTimer = Timer.stamp();
-				if (alpha == 0.5)
-				{
-					alpha = 1;
-				}
-				else
-				{
-					alpha = 0.5;
-				}
+				alpha = 0.5;
 			}
+		}
+	}
+
+	function createAnimations()
+	{
+		// walk animations
+		animation.add("up", [5, 6, 7, 8], animRate, false, false, false); // 1
+		animation.add("upright", [10, 11, 12, 13], animRate, false, false, false); // 2
+		animation.add("right", [15, 16, 17, 18], animRate, false, false, false); // 3
+		animation.add("downright", [20, 21, 22, 23], animRate, false, false, false); // 4
+		animation.add("down", [25, 26, 27, 28], animRate, false, false, false); // 5
+		animation.add("upleft", [10, 11, 12, 13], animRate, false, true, false); // 6
+		animation.add("left", [15, 16, 17, 18], animRate, false, true, false); // 7
+		animation.add("downleft", [20, 21, 22, 23], animRate, false, true, false); // 8
+
+		// idle animations
+		animation.add("Uidle", [4], animRate, false, false, false); // 1
+		animation.add("URidle", [3], animRate, false, false, false); // 2
+		animation.add("Ridle", [2], animRate, false, false, false); // 3
+		animation.add("DRidle", [1], animRate, false, false, false); // 4
+		animation.add("Didle", [0], animRate, false, false, false); // 5
+		animation.add("ULidle", [3], animRate, false, true, false); // 6
+		animation.add("Lidle", [2], animRate, false, true, false); // 7
+		animation.add("DLidle", [1], animRate, false, true, false); // 8
+	}
+
+	function playAnimation(aNum:Int)
+	{
+		switch aNum
+		{
+			case 1:
+				animation.play("up");
+			case 2:
+				animation.play("upright");
+			case 3:
+				animation.play("right");
+			case 4:
+				animation.play("downright");
+			case 5:
+				animation.play("down");
+			case 6:
+				animation.play("upleft");
+			case 7:
+				animation.play("left");
+			case 8:
+				animation.play("downleft");
+		}
+	}
+
+	function playIdleAnimation(aNum:Int)
+	{
+		switch aNum
+		{
+			case 1:
+				animation.play("Uidle");
+			case 2:
+				animation.play("URidle");
+			case 3:
+				animation.play("Ridle");
+			case 4:
+				animation.play("DRidle");
+			case 5:
+				animation.play("Didle");
+			case 6:
+				animation.play("ULidle");
+			case 7:
+				animation.play("Lidle");
+			case 8:
+				animation.play("DLidle");
 		}
 	}
 }
