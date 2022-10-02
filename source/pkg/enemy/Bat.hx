@@ -36,52 +36,7 @@ class Bat extends Enemy
 
 	override function attack(player:FlxSprite)
 	{
-		chargeTimer = 0;
-		if (attackTimer == 0)
-		{
-			attackTimer = Timer.stamp();
-			if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Calculate where player is relative to enemy (attack in 4 cardinal directions)
-			{
-				originalY = 0;
-				if (player.x > x)
-				{
-					setGraphicSize(108, 20 * 3); // Extend hitbox to the right
-					originalX = 0;
-				}
-				else
-				{
-					setGraphicSize(108, 20 * 3); // Extend hitbox to the left
-					x -= 54;
-					originalX = 54;
-				}
-			}
-			else
-			{
-				originalX = 0;
-				if (player.y > y)
-				{
-					setGraphicSize(18 * 3, 120); // Extend hitbox upward
-					originalY = 0;
-				}
-				else
-				{
-					setGraphicSize(18 * 3, 120); // Extend hitbox downward
-					y -= 60;
-					originalY = 60;
-				}
-			}
-			updateHitbox();
-		}
-
-		if (Timer.stamp() - attackTimer > attackCD) // keep hitbox active for 2 seconds
-		{
-			isAttacking = false;
-			attackTimer = 0;
-			setGraphicSize(18 * 3, 20 * 3);
-			x += originalX;
-			y += originalY;
-			updateHitbox();
-		}
+		// add special AI here if you want, otherwise just use regular attack function
 	}
 
 	function createAnimations()
