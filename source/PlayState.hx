@@ -27,7 +27,7 @@ class PlayState extends FlxState
 		player = new Player(FlxG.width / 3, FlxG.height / 3); // Create a new player
 		add(player);
 		enemy = new Enemy(400, 400);
-		// add(enemy);
+		add(enemy);
 		weapon = new Weapon();
 		add(weapon);
 

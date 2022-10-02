@@ -9,17 +9,7 @@ import flixel.util.FlxColor;
 **/
 class Weapon extends FlxSprite
 {
-	var up:Bool;
-	var down:Bool;
-	var left:Bool;
-	var right:Bool;
-	var VEL:Float = 100;
-
-	var targetX:Float;
-	var targetY:Float;
-
-	var distCCW:Float;
-	var distCW:Float;
+	var VEL:Float = 2;
 
 	public var targetAngle:Float;
 
@@ -41,6 +31,7 @@ class Weapon extends FlxSprite
 		// control angle
 		targetAngle = angleControl(player);
 
+		// choose angular speed
 		if (targetAngle == 69420)
 		{
 			angularAcceleration = 0;
@@ -49,22 +40,22 @@ class Weapon extends FlxSprite
 		{
 			if (angle > targetAngle + 180)
 			{
-				angularAcceleration = 300;
+				angularAcceleration = VEL * Math.abs(angle - 360 - targetAngle);
 			}
 			else
 			{
-				angularAcceleration = -300;
+				angularAcceleration = -1 * VEL * Math.abs(angle - targetAngle);
 			}
 		}
 		else if (angle < targetAngle)
 		{
 			if (angle > targetAngle - 180)
 			{
-				angularAcceleration = 300;
+				angularAcceleration = VEL * Math.abs(angle - targetAngle);
 			}
 			else
 			{
-				angularAcceleration = -300;
+				angularAcceleration = -1 * VEL * Math.abs(angle + 360 - targetAngle);
 			}
 		}
 
@@ -79,9 +70,8 @@ class Weapon extends FlxSprite
 
 		x = (-20 * Math.sin(angle / 180 * Math.PI)) + player.x;
 		y = (20 * Math.cos(angle / 180 * Math.PI)) + player.y;
-		targetX = (-20 * Math.sin(targetAngle / 180 * Math.PI)) + player.x;
-		targetY = (20 * Math.cos(targetAngle / 180 * Math.PI)) + player.y;
 
+		// Keep angle between 360 and 0
 		if (angle < 0)
 		{
 			angle = 360;
@@ -92,6 +82,7 @@ class Weapon extends FlxSprite
 		}
 	}
 
+	//**Calculates where the weapon is relative to the player and the weapon's rotational speed.**/
 	function angleControl(player:FlxSprite):Float
 	{
 		if (player.velocity.x > 0)
