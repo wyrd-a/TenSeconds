@@ -98,7 +98,7 @@ class BattleSubState extends FlxSubState
 			super.update(elapsed);
 			this.checkHitboxes();
 			this.enemy.aiWorkings(this.player);
-			this.ui.updateUI(player);
+			this.ui.updateUI(player, enemy);
 			bomb.countdown(player, enemy);
 			this.weapon.positioning(this.player, this.enemy);
 			swapLevel();
