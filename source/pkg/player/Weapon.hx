@@ -12,10 +12,10 @@ import haxe.Timer;
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = 4;
+	var VEL:Float = 5;
 
 	public var DIST:Float = 75;
-	public var CHARGE:Float = 350;
+	public var CHARGE:Float = 500;
 	public var targetAngle:Float;
 
 	public var spunUp:Bool = false;

@@ -50,6 +50,14 @@ class Boss extends Enemy
 		{
 			attack(player);
 		}
+		if (player.x > x)
+		{
+			animation.play("right");
+		}
+		else
+		{
+			animation.play("left");
+		}
 	}
 
 	/**The bat has a unique charge attack. This overrides the basic Enemy attack.**/

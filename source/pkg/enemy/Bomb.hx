@@ -69,6 +69,7 @@ class Bomb extends FlxSpriteGroup
 		roomBarriers.animation.add("1", [0]);
 		roomBarriers.animation.add("2", [1]);
 		roomBarriers.animation.add("3", [2]);
+		roomBarriers.animation.add("4", [3]);
 		roomBarriers.animation.play(Std.string(Config.roomLevel));
 		add(roomBarriers);
 		roomBarriers.scale.set(3, 3);
