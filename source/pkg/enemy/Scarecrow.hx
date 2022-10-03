@@ -58,6 +58,8 @@ class Scarecrow extends Enemy
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{
 			attackTimer = Timer.stamp();
+			loadGraphic(AssetPaths.ScarecrowAttack__png, true, 36, 41);
+			animation.add("attack", [0, 1]);
 			// Change hitbox here
 		}
 		// Length of attack functions here
@@ -68,6 +70,9 @@ class Scarecrow extends Enemy
 		{
 			isAttacking = false;
 			attackTimer = 0;
+			loadGraphic(AssetPaths.Scarecrow__png, true, 38, 49);
+			createAnimations();
+			animation.play("right");
 		}
 	}
 
@@ -75,6 +80,5 @@ class Scarecrow extends Enemy
 	{
 		animation.add("right", [for (i in(0...18)) i], animRate, true, false, false);
 		animation.add("left", [for (i in(0...18)) i], animRate, true, true, false);
-		animation.add("attack", [1]);
 	}
 }
