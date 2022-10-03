@@ -2,6 +2,7 @@ package pkg.player;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
 
 /**
@@ -10,9 +11,9 @@ import flixel.util.FlxColor;
 class Weapon extends FlxSprite
 {
 	var VEL:Float = .15;
-	var DIST:Float = 75;
-	var CHARGE:Float = 200;
 
+	public var DIST:Float = 75;
+	public var CHARGE:Float = 200;
 	public var targetAngle:Float;
 
 	public function new(x:Float = 0, y:Float = 0)
@@ -23,7 +24,6 @@ class Weapon extends FlxSprite
 		animation.add("charged", [1], 60, true, false, true);
 		setGraphicSize(Std.int(3 * this.width), 0);
 		updateHitbox();
-
 		angularDrag = 200;
 		maxAngular = 400;
 	}
@@ -81,11 +81,10 @@ class Weapon extends FlxSprite
 			angle = 0;
 		}
 
-		// Weapon charge state
+		// Weapon charge animation
 		if (Math.abs(angularVelocity) > CHARGE)
 		{
 			animation.play("charged");
-			FlxG.overlap(enemy, this, hurtEnemy); // hurt the enemy!
 		}
 		else
 		{
@@ -141,11 +140,5 @@ class Weapon extends FlxSprite
 				return 69420;
 			}
 		}
-	}
-
-	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
-	{
-		objA.health -= 1;
-		angularVelocity = 0; // This creates the "hit" feel
 	}
 }

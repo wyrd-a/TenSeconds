@@ -20,10 +20,10 @@ class Ghost extends Enemy
 		// Ghost specific stuff
 		tooCloseDist = 0;
 		attackCD = 1;
-		chargeCD = 2;
+		chargeCD = 1;
 		iframeCD = 1;
-		maxSpeed = 80;
-		health = 20;
+		maxSpeed = 120;
+		health = 6;
 		aggroRange = 100;
 
 		oldHealth = health; // for tracking i-frames
@@ -59,10 +59,10 @@ class Ghost extends Enemy
 			attackTimer = Timer.stamp();
 			// Change hitbox here
 			originalCenter = this.origin;
-			this.scale.set(5, 5);
+			this.scale.set(6, 6);
 			this.updateHitbox();
-			this.x -= originalCenter.x;
-			this.y -= originalCenter.y;
+			this.x -= origin.x * 3;
+			this.y -= origin.y * 3;
 		}
 		// Length of attack functions here
 		velocity.set(0, 0);
@@ -70,10 +70,10 @@ class Ghost extends Enemy
 		{
 			isAttacking = false;
 			attackTimer = 0;
+			this.x += origin.x * 3;
+			this.y += origin.y * 3;
 			this.scale.set(3, 3);
 			this.updateHitbox();
-			this.x += originalCenter.x;
-			this.y += originalCenter.y;
 		}
 	}
 

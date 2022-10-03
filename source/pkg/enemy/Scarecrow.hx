@@ -13,7 +13,7 @@ class Scarecrow extends Enemy
 {
 	public var theta:Float; // Used for bat charge attack
 
-	var attackSpeed:Float = 120;
+	var attackSpeed:Float = 100;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -24,16 +24,18 @@ class Scarecrow extends Enemy
 		attackCD = 3;
 		chargeCD = 1;
 		iframeCD = 1;
-		maxSpeed = 100;
-		health = 20;
+		maxSpeed = 80;
+		health = 3;
 		aggroRange = 100;
 		animRate = 25;
+
+		oldHealth = health; // for tracking i-frames
 
 		loadGraphic(AssetPaths.Scarecrow__png, true, 38, 49);
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
-		updateHitbox();
+		hitBoxBounding();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -65,6 +67,7 @@ class Scarecrow extends Enemy
 			loadGraphic(AssetPaths.ScarecrowAttack__png, true, 36, 41);
 			animation.add("attack", [0, 1]);
 			// Change hitbox here
+			hitBoxBounding();
 		}
 		// Length of attack functions here
 		theta = FlxAngle.angleBetween(this, player);
@@ -77,6 +80,7 @@ class Scarecrow extends Enemy
 			loadGraphic(AssetPaths.Scarecrow__png, true, 38, 49);
 			createAnimations();
 			animation.play("right");
+			hitBoxBounding();
 		}
 	}
 
@@ -85,5 +89,12 @@ class Scarecrow extends Enemy
 		animation.add("right", [for (i in(0...18)) i], animRate, true, false, false);
 		animation.add("left", [for (i in(0...18)) i], animRate, true, true, false);
 		animation.add("charging", [1]);
+	}
+
+	function hitBoxBounding()
+	{
+		updateHitbox();
+		this.height = 38;
+		this.offset.set(20, -1 * this.origin.y);
 	}
 }

@@ -28,6 +28,8 @@ class Bat extends Enemy
 		aggroRange = 100;
 		health = 5;
 
+		oldHealth = health; // for tracking i-frames
+
 		loadGraphic(AssetPaths.bat__png, true, 25, 22);
 		createAnimations();
 		animation.play("right");
