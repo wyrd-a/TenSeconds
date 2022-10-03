@@ -3,24 +3,23 @@ package pkg.player;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
+import flixel.util.FlxColor;
 
 /**Real jank way of moving hitbox off of weapon to tip of weapon, but hey it works.**/
 class WeaponGroup extends FlxSpriteGroup
 {
 	var weapon:Weapon;
 	var weaponBox:FlxSprite;
-	var wbDist:Float;
+	var wbDist:Float = 100;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super();
 		weapon = new Weapon();
 		add(weapon);
-		weaponBox = new FlxSprite().makeGraphic(16, 16);
+		weaponBox = new FlxSprite().makeGraphic(16, 16, FlxColor.WHITE);
 		add(weaponBox);
 		weaponBox.alpha = 0;
-
-		wbDist = weapon.DIST;
 	}
 
 	override public function update(elapsed:Float):Void

@@ -85,7 +85,7 @@ class BattleSubState extends FlxSubState
 		enemyArray[1] = ghost;
 		enemyArray[2] = scarecrow;
 		enemyNum = Math.floor(3 * Math.random());
-		this.enemy = this.enemyArray[enemyNum];
+		this.enemy = this.enemyArray[2];
 		add(this.enemy);
 	}
 }
