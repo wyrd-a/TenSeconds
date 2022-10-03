@@ -17,6 +17,7 @@ class StartState extends FlxState
 
 	override public function create()
 	{
+		FlxG.mouse.load(AssetPaths.crosshair__png);
 		super.create();
 		var startBg = new FlxSprite(0, 0);
 		startBg.loadGraphic(AssetPaths.startScreen__png);
