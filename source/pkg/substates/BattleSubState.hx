@@ -80,7 +80,7 @@ class BattleSubState extends FlxSubState
 		this.weapon = new WeaponGroup();
 		add(this.weapon);
 
-		this.ui = new UI(80, 80);
+		this.ui = new UI(0, 0);
 		add(this.ui);
 
 		fadeToBlack = new FlxSprite(0, 0);

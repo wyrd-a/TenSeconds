@@ -27,6 +27,8 @@ class Boss extends Enemy
 		maxSpeed = 100;
 		aggroRange = 200;
 		health = 10;
+		maxHealth = 10;
+		name = "Hickertock";
 
 		oldHealth = health; // for tracking i-frames
 

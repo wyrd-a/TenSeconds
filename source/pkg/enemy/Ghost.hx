@@ -25,6 +25,8 @@ class Ghost extends Enemy
 		maxSpeed = 120;
 		health = 6;
 		aggroRange = 75;
+		maxHealth = 6;
+		name = "Ghost";
 
 		oldHealth = health; // for tracking i-frames
 

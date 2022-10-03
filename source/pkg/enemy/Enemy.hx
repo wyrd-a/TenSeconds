@@ -25,6 +25,10 @@ class Enemy extends FlxSprite
 
 	public var isAttacking:Bool = false;
 
+	public var maxHealth:Float = 5;
+
+	public var name:String;
+
 	var attackTimer:Float = 0;
 
 	var targetX:Float;

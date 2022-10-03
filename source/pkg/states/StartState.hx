@@ -19,10 +19,22 @@ class StartState extends FlxState
 	{
 		super.create();
 		var startBg = new FlxSprite(0, 0);
-		startBg.loadGraphic(AssetPaths.dumbcat1__jpg);
+		startBg.loadGraphic(AssetPaths.startScreen__png);
 
 		add(startBg);
-		this.createButtons();
+		startBg.scale.set(3, 3);
+		startBg.updateHitbox();
+		startBg.setPosition(0, 0);
+		// this.createButtons();
+	}
+
+	override public function update(elapsed:Float)
+	{
+		if (FlxG.mouse.pressed)
+		{
+			FlxG.switchState(new PlayState());
+		}
+		super.update(elapsed);
 	}
 
 	private function createButtons()
