@@ -28,10 +28,10 @@ class Room extends FlxSpriteGroup
 	public var wallBounds:Array<FlxSprite>;
 	public var obstacleSortGroup:FlxSpriteGroup;
 
-	public function new(?background:String)
+	public function new(?background:String, ?powerUp:String)
 	{
 		super();
-		this.setBackground();
+		this.setBackground(background);
 		this.createWalls();
 	}
 
@@ -139,8 +139,8 @@ class Room extends FlxSpriteGroup
 		{
 			for (index => collidingSprite in sprites)
 			{
-				FlxG.collide(bound, collidingSprite);
 				bound.updateHitbox();
+				FlxG.collide(bound, collidingSprite);
 			}
 		}
 	}

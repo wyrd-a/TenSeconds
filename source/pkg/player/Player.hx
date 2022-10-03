@@ -15,13 +15,17 @@ class Player extends FlxSprite
 	var down:Bool;
 	var left:Bool;
 	var right:Bool;
-	var VEL:Float = 100;
+	var VEL:Float = 200;
 
 	// immunity stuff
 	var oldHealth:Float;
 	var iframes:Bool = false;
 	var iframeCounter:Float = 0;
 	var flashTimer:Float = 0;
+
+	// Track UI health
+	public var currentHealth:Float;
+	public var maxHealth:Float = 5;
 
 	// animation stuff
 	var animationNumber:Int;
@@ -31,20 +35,20 @@ class Player extends FlxSprite
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.player_move__png, true, 24, 24);
-		offset.set(10, 10);
-		updateHitbox();
+		offset.set(0, 6);
 		setGraphicSize(72, 72);
 		createAnimations();
-		health = 5; // sets player's health
-		oldHealth = health; // for tracking i-frames?
+		health = maxHealth; // sets player's health
+		oldHealth = health; // for tracking i-frames
+		currentHealth = health;
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		move();
 		boundToBorder();
-		deathCheck();
 		super.update(elapsed);
+		deathCheck();
 	}
 
 	function move()
@@ -157,6 +161,7 @@ class Player extends FlxSprite
 	function immunity()
 	{
 		health = oldHealth;
+		currentHealth = health;
 		if (iframeCounter == 0)
 		{
 			iframeCounter = Timer.stamp();
@@ -184,15 +189,16 @@ class Player extends FlxSprite
 
 	function createAnimations()
 	{
-		// walk animations
-		animation.add("up", [5, 6, 7, 8], animRate, false, false, false); // 1
-		animation.add("upright", [10, 11, 12, 13], animRate, false, false, false); // 2
-		animation.add("right", [15, 16, 17, 18], animRate, false, false, false); // 3
-		animation.add("downright", [20, 21, 22, 23], animRate, false, false, false); // 4
-		animation.add("down", [25, 26, 27, 28], animRate, false, false, false); // 5
-		animation.add("upleft", [10, 11, 12, 13], animRate, false, true, false); // 6
-		animation.add("left", [15, 16, 17, 18], animRate, false, true, false); // 7
-		animation.add("downleft", [20, 21, 22, 23], animRate, false, true, false); // 8
+		// walk animations (comments to the right are the corresponding animationNumber)
+		// We use animationNumber because it makes it easier to only call one animation.play()
+		animation.add("up", [for (i in(5...9)) i], animRate, false, false, false); // 1
+		animation.add("upright", [for (i in(10...14)) i], animRate, false, false, false); // 2
+		animation.add("right", [for (i in(15...19)) i], animRate, false, false, false); // 3
+		animation.add("downright", [for (i in(20...24)) i], animRate, false, false, false); // 4
+		animation.add("down", [for (i in(25...29)) i], animRate, false, false, false); // 5
+		animation.add("upleft", [for (i in(10...14)) i], animRate, false, true, false); // 6
+		animation.add("left", [for (i in(15...19)) i], animRate, false, true, false); // 7
+		animation.add("downleft", [for (i in(20...24)) i], animRate, false, true, false); // 8
 
 		// idle animations
 		animation.add("Uidle", [4], animRate, false, false, false); // 1

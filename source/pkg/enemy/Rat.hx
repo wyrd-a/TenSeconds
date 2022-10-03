@@ -3,32 +3,34 @@ package pkg.enemy;
 import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.math.FlxPoint;
+import flixel.math.FlxAngle;
 import haxe.Timer;
 
 /**
-	This is the Ghost. It uses an AOE attack when it gets close.
+	This is the Rat. It uses a charge attack when it gets close.
 **/
-class Ghost extends Enemy
+class Rat extends Enemy
 {
-	var originalCenter:FlxPoint;
+	public var theta:Float; // Used for rat charge attack
+
+	var attackSpeed:Float = 150;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
 
-		// Ghost specific stuff
+		// Rat specific stuff
 		tooCloseDist = 0;
-		attackCD = 1;
-		chargeCD = 1;
+		attackCD = 2;
+		chargeCD = 2;
 		iframeCD = 2;
-		maxSpeed = 120;
-		health = 6;
+		maxSpeed = 60;
 		aggroRange = 100;
+		health = 5;
 
 		oldHealth = health; // for tracking i-frames
 
-		loadGraphic(AssetPaths.Ghost__png, true, 18, 39);
+		loadGraphic(AssetPaths.rat__png, true, 37, 28);
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
@@ -50,7 +52,7 @@ class Ghost extends Enemy
 		}
 	}
 
-	/**The ghost gets bigger. This overrides the basic Enemy attack.**/
+	/**The bat has a unique charge attack. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
 		chargeTimer = 0;
@@ -58,28 +60,23 @@ class Ghost extends Enemy
 		{
 			attackTimer = Timer.stamp();
 			// Change hitbox here
-			originalCenter = this.origin;
-			this.scale.set(6, 6);
-			this.updateHitbox();
-			this.x -= origin.x * 3;
-			this.y -= origin.y * 3;
+			theta = FlxAngle.angleBetween(this, player);
 		}
-		// Length of attack functions here
-		velocity.set(0, 0);
+		// Longterm effects happen here
+		velocity.set(attackSpeed * Math.cos(theta), attackSpeed * Math.sin(theta));
+
 		if (Timer.stamp() - attackTimer > attackCD) // Retract hitbox after a certain amount of time has passed
 		{
 			isAttacking = false;
 			attackTimer = 0;
-			this.x += origin.x * 3;
-			this.y += origin.y * 3;
-			this.scale.set(3, 3);
-			this.updateHitbox();
+			// Restore sprite to initial configuration here
+			velocity.set(0, 0);
 		}
 	}
 
 	function createAnimations()
 	{
-		animation.add("right", [for (i in(0...12)) i], animRate, true, false, false);
-		animation.add("left", [for (i in(0...12)) i], animRate, true, true, false);
+		animation.add("right", [for (i in(0...23)) i], animRate, true, true, false);
+		animation.add("left", [for (i in(0...23)) i], animRate, true, false, false);
 	}
 }

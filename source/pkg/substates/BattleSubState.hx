@@ -5,12 +5,18 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.group.FlxSpriteGroup;
+import flixel.text.FlxText;
 import flixel.util.FlxSort;
-import pkg.enemy.Enemy;
+import haxe.macro.Type.AbstractType;
+import pkg.enemy.Bat;
+import pkg.enemy.Bomb;
 import pkg.enemy.Ghost;
+import pkg.enemy.Rat;
+import pkg.enemy.Scarecrow;
 import pkg.player.Player;
 import pkg.player.UI;
 import pkg.player.Weapon;
+import pkg.player.WeaponGroup;
 import pkg.room.Obstacle;
 import pkg.room.Room;
 
@@ -23,10 +29,19 @@ class BattleSubState extends FlxSubState
 	public var isPersistent:Bool = true;
 
 	var player:Player;
-	var enemy:Ghost;
-	var weapon:Weapon;
-	var ui:UI;
+	var weapon:WeaponGroup;
 	var room:Room;
+	var ui:UI;
+	var bomb:Bomb;
+
+	// I'm sorry, wyrd-a
+	var ghost:Ghost;
+	var bat:Bat;
+	var scarecrow:Scarecrow;
+	var rat:Rat;
+	var enemyArray:Array<Dynamic>;
+	var enemyNum:Int;
+	var enemy:Dynamic;
 	var obstacleSortGroup:FlxSpriteGroup;
 
 	override public function create()
@@ -39,29 +54,55 @@ class BattleSubState extends FlxSubState
 		// group
 		add(this.room);
 
-		this.enemy = new Enemy(400, 400);
-		// add(this.weapon);
-		// this.ui = new UI(20, FlxG.height - 22);
-		// add(this.ui);
+		// Things with logic tied to them
+		this.player = new Player(200, 200);
 
+		// Once again, I apologize
+		enemyCreation();
+
+		// Adds player and enemy
 		this.room.createRoomObstacles([this.player, this.enemy]);
 
+		bomb = new Bomb(-50, -50);
+		add(bomb);
+
+		this.weapon = new WeaponGroup();
+		add(this.weapon);
+
+		this.ui = new UI(20, FlxG.height - 22);
+		add(this.ui);
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
-		this.checkHitboxes();
-		this.enemy.trackPlayer(player);
-		// this.weapon.move(player, enemy);
-		// this.ui.updateUI(player);
-
 		super.update(elapsed);
+		this.checkHitboxes();
+		this.enemy.aiWorkings(this.player);
+		this.ui.updateUI(player);
+		bomb.countdown(player, enemy);
+		this.weapon.positioning(this.player, this.enemy);
 	}
 
 	public function checkHitboxes()
 	{
-		this.room.checkWallHitboxes([player, enemy]);
+		this.room.checkWallHitboxes([this.player, this.enemy]);
 		this.room.checkObstacles();
+	}
+
+	/**Initiates a bunch of enemies and then chooses one to add to the game. Probably inefficient but its 2:27 am**/
+	function enemyCreation()
+	{
+		enemyArray = new Array<Dynamic>();
+		bat = new Bat(400, 400);
+		ghost = new Ghost(400, 400);
+		scarecrow = new Scarecrow(400, 400);
+		rat = new Rat(400, 400);
+		enemyArray[0] = bat;
+		enemyArray[1] = ghost;
+		enemyArray[2] = scarecrow;
+		enemyArray[3] = rat;
+		enemyNum = Math.floor(enemyArray.length * Math.random());
+		this.enemy = this.enemyArray[enemyNum];
 	}
 }

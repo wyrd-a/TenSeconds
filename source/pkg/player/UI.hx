@@ -1,13 +1,11 @@
 package pkg.player;
 
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
-class UI extends FlxTypedGroup<FlxObject>
+class UI extends FlxSpriteGroup
 {
 	var healthText:FlxText;
 	var healthBar:FlxSprite;
@@ -16,7 +14,9 @@ class UI extends FlxTypedGroup<FlxObject>
 	{
 		super();
 		healthBar = new FlxSprite(x, y).makeGraphic(100, 20, FlxColor.GREEN);
+		add(healthBar);
 		healthText = new FlxText(x, y + 6);
+		add(healthText);
 		healthText.text = "5 / 5";
 	}
 
@@ -25,13 +25,13 @@ class UI extends FlxTypedGroup<FlxObject>
 		super.update(elapsed);
 	}
 
-	public function updateUI(player:FlxSprite)
+	public function updateUI(player:Player)
 	{
 		if (player.health > 0)
 		{
-			healthBar.setGraphicSize(Std.int(20 * player.health), 20);
+			healthBar.setGraphicSize(Std.int(20 * player.currentHealth), 20);
 			healthBar.updateHitbox();
-			healthText.text = player.health + " / 5";
+			healthText.text = player.currentHealth + " / " + player.maxHealth;
 		}
 	}
 }
