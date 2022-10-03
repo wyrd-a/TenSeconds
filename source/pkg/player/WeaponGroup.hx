@@ -46,6 +46,8 @@ class WeaponGroup extends FlxSpriteGroup
 	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
 	{
 		objA.health -= 1;
-		weapon.angularVelocity = 0; // This creates the "hit" feel
+		// weapon.angularVelocity = 0; // This creates the "hit" feel
+		weapon.spunUp = false;
+		// play SFX
 	}
 }

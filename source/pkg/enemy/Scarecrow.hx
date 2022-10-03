@@ -23,7 +23,7 @@ class Scarecrow extends Enemy
 		tooCloseDist = 0;
 		attackCD = 3;
 		chargeCD = 1;
-		iframeCD = 1;
+		iframeCD = 2;
 		maxSpeed = 80;
 		health = 3;
 		aggroRange = 100;

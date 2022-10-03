@@ -4,28 +4,33 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
+import haxe.Timer;
 
 /**
 	This is the weapon. Idk how it works.
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = .15;
+	var VEL:Float = 5;
 
 	public var DIST:Float = 75;
-	public var CHARGE:Float = 200;
+	public var CHARGE:Float = 350;
 	public var targetAngle:Float;
+
+	public var spunUp:Bool = false;
+
+	var spinTimer:Float = 0;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(AssetPaths.weapon__png, true, 9, 27);
-		animation.add("uncharged", [2], 60, true, false, true);
-		animation.add("charged", [1], 60, true, false, true);
+		loadGraphic(AssetPaths.weapon__png, true, 11, 29);
+		animation.add("uncharged", [1], 60, true, false, true);
+		animation.add("charged", [0], 60, true, false, true);
 		setGraphicSize(Std.int(3 * this.width), 0);
 		updateHitbox();
-		angularDrag = 200;
-		maxAngular = 400;
+		angularDrag = 100;
+		maxAngular = 1000;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -39,31 +44,61 @@ class Weapon extends FlxSprite
 		// control angle
 		targetAngle = angleControl(player);
 
-		// choose angular speed
-		if (targetAngle == 69420)
-		{
-			angularAcceleration = 0;
-		}
-		else if (angle > targetAngle)
-		{
-			if (angle > targetAngle + 180)
+		if (!spunUp)
+		{ // choose angular speed
+			if (targetAngle == 69420)
 			{
-				angularVelocity += VEL * Math.abs(angle - 360 - targetAngle);
+				angularAcceleration = 0;
+			}
+			else if (angle > targetAngle)
+			{
+				if (angle > targetAngle + 180)
+				{
+					angularVelocity += VEL;
+				}
+				else
+				{
+					angularVelocity += -1 * VEL;
+				}
+			}
+			else if (angle < targetAngle)
+			{
+				if (angle > targetAngle - 180)
+				{
+					angularVelocity += VEL;
+				}
+				else
+				{
+					angularVelocity += -1 * VEL;
+				}
+			}
+		}
+		else
+		{
+			if (angularVelocity > 0)
+			{
+				angularVelocity = CHARGE + 10;
 			}
 			else
 			{
-				angularVelocity += -1 * VEL * Math.abs(angle - targetAngle);
+				angularVelocity = -1 * (CHARGE + 10);
 			}
-		}
-		else if (angle < targetAngle)
-		{
-			if (angle > targetAngle - 180)
+			if (spinTimer == 0)
 			{
-				angularVelocity += VEL * Math.abs(angle - targetAngle);
+				spinTimer = Timer.stamp();
 			}
-			else
+			if ((Timer.stamp() - spinTimer > 5) || !spunUp)
 			{
-				angularVelocity += -1 * VEL * Math.abs(angle + 360 - targetAngle);
+				spunUp = false;
+				if (angularVelocity > 0)
+				{
+					angularVelocity = 150;
+				}
+				else
+				{
+					angularVelocity = -150;
+				}
+				spinTimer = 0;
 			}
 		}
 
@@ -84,6 +119,7 @@ class Weapon extends FlxSprite
 		// Weapon charge animation
 		if (Math.abs(angularVelocity) > CHARGE)
 		{
+			spunUp = true;
 			animation.play("charged");
 		}
 		else

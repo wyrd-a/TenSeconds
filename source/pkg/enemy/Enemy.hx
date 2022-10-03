@@ -227,7 +227,7 @@ class Enemy extends FlxSprite
 		{
 			kill();
 		}
-		else if ((health != oldHealth && !iframes))
+		else if (((health != oldHealth) && !iframes))
 		{
 			iframes = true;
 			oldHealth = health;

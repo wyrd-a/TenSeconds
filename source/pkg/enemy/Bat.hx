@@ -23,7 +23,7 @@ class Bat extends Enemy
 		tooCloseDist = 0;
 		attackCD = 2;
 		chargeCD = 2;
-		iframeCD = 1;
+		iframeCD = 2;
 		maxSpeed = 60;
 		aggroRange = 100;
 		health = 5;
