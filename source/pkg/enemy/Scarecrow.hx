@@ -7,28 +7,29 @@ import flixel.math.FlxAngle;
 import haxe.Timer;
 
 /**
-	This is the Bat. It uses an AOE attack when it gets close.
+	This is the Scarecrow. It spins.
 **/
-class Bat extends Enemy
+class Scarecrow extends Enemy
 {
 	public var theta:Float; // Used for bat charge attack
 
-	var attackSpeed:Float = 150;
+	var attackSpeed:Float = 120;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
 
-		// Bat specific stuff
+		// Scarecrow specific stuff
 		tooCloseDist = 0;
-		attackCD = 2;
-		chargeCD = 2;
+		attackCD = 3;
+		chargeCD = 1;
 		iframeCD = 1;
-		maxSpeed = 60;
+		maxSpeed = 100;
+		health = 20;
 		aggroRange = 100;
-		health = 5;
+		animRate = 25;
 
-		loadGraphic(AssetPaths.bat__png, true, 25, 22);
+		loadGraphic(AssetPaths.Scarecrow__png, true, 38, 49);
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
@@ -50,7 +51,7 @@ class Bat extends Enemy
 		}
 	}
 
-	/**The bat has a unique charge attack. This overrides the basic Enemy attack.**/
+	/**The scarecrow spins and follows the player. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
 		chargeTimer = 0;
@@ -58,23 +59,22 @@ class Bat extends Enemy
 		{
 			attackTimer = Timer.stamp();
 			// Change hitbox here
-			theta = FlxAngle.angleBetween(this, player);
 		}
-		// Longterm effects happen here
+		// Length of attack functions here
+		theta = FlxAngle.angleBetween(this, player);
 		velocity.set(attackSpeed * Math.cos(theta), attackSpeed * Math.sin(theta));
-
+		animation.play("attack");
 		if (Timer.stamp() - attackTimer > attackCD) // Retract hitbox after a certain amount of time has passed
 		{
 			isAttacking = false;
 			attackTimer = 0;
-			// Restore sprite to initial configuration here
-			velocity.set(0, 0);
 		}
 	}
 
 	function createAnimations()
 	{
-		animation.add("right", [for (i in(0...7)) i], animRate, true, true, false);
-		animation.add("left", [for (i in(0...7)) i], animRate, true, false, false);
+		animation.add("right", [for (i in(0...18)) i], animRate, true, false, false);
+		animation.add("left", [for (i in(0...18)) i], animRate, true, true, false);
+		animation.add("attack", [1]);
 	}
 }

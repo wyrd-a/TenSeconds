@@ -6,9 +6,11 @@ import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.text.FlxText;
 import flixel.util.FlxSort;
+import haxe.macro.Type.AbstractType;
 import pkg.enemy.Bat;
 import pkg.enemy.Enemy;
 import pkg.enemy.Ghost;
+import pkg.enemy.Scarecrow;
 import pkg.player.Player;
 import pkg.player.UI;
 import pkg.player.Weapon;
@@ -26,7 +28,7 @@ class BattleSubState extends FlxSubState
 	var enemy:Bat;
 	var weapon:Weapon;
 	var room:Room;
-	// var ui:UI;
+	var ui:UI;
 	var healthText:FlxText;
 
 	override public function create()
@@ -37,12 +39,12 @@ class BattleSubState extends FlxSubState
 		// Things with logic tied to them
 		this.player = new Player(200, 200);
 		add(this.player);
-		this.enemy = new Bat(400, 400);
+		enemy = new Bat(400, 400);
 		add(this.enemy);
 		this.weapon = new Weapon();
-		add(this.weapon);
-		// ui = new UI(20, FlxG.height - 22);
-		// add(ui);
+		// add(this.weapon);
+		this.ui = new UI(20, FlxG.height - 22);
+		add(this.ui);
 
 		this.healthText = new FlxText(40, 40);
 		add(healthText);
@@ -52,12 +54,10 @@ class BattleSubState extends FlxSubState
 	override public function update(elapsed:Float)
 	{
 		this.checkHitboxes();
-		this.enemy.trackPlayer(this.player);
+		this.enemy.aiWorkings(this.player);
 		this.weapon.move(this.player, this.enemy);
-		// ui.updateUI(player);
-		this.healthText.text = Std.string(this.enemy.health);
+		this.ui.updateUI(player);
 		super.update(elapsed);
-		trace("Updated in battle state");
 	}
 
 	public function checkHitboxes()

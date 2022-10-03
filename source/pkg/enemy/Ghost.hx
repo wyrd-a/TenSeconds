@@ -3,6 +3,7 @@ package pkg.enemy;
 import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import haxe.Timer;
 
 /**
@@ -10,6 +11,8 @@ import haxe.Timer;
 **/
 class Ghost extends Enemy
 {
+	var originalCenter:FlxPoint;
+
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
@@ -17,10 +20,12 @@ class Ghost extends Enemy
 		// Ghost specific stuff
 		tooCloseDist = 0;
 		attackCD = 1;
-		chargeCD = 1;
+		chargeCD = 2;
 		iframeCD = 1;
 		maxSpeed = 80;
 		health = 20;
+		aggroRange = 100;
+
 		oldHealth = health; // for tracking i-frames
 
 		loadGraphic(AssetPaths.Ghost__png, true, 18, 39);
@@ -35,59 +40,46 @@ class Ghost extends Enemy
 		super.update(elapsed);
 	}
 
+	/**Parses the player information through upper level before reaching Enemy. Allows for attack to be overwritten on an individual basis.**/
+	public function aiWorkings(player:FlxSprite)
+	{
+		this.trackPlayer(player);
+		if (isAttacking)
+		{
+			attack(player);
+		}
+	}
+
+	/**The ghost gets bigger. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
 		chargeTimer = 0;
-		if (attackTimer == 0)
+		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{
 			attackTimer = Timer.stamp();
-			if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Calculate where player is relative to enemy (attack in 4 cardinal directions)
-			{
-				originalY = 0;
-				if (player.x > x)
-				{
-					setGraphicSize(108, 20 * 3); // Extend hitbox to the right
-					originalX = 0;
-				}
-				else
-				{
-					setGraphicSize(108, 20 * 3); // Extend hitbox to the left
-					x -= 54;
-					originalX = 54;
-				}
-			}
-			else
-			{
-				originalX = 0;
-				if (player.y > y)
-				{
-					setGraphicSize(18 * 3, 120); // Extend hitbox upward
-					originalY = 0;
-				}
-				else
-				{
-					setGraphicSize(18 * 3, 120); // Extend hitbox downward
-					y -= 60;
-					originalY = 60;
-				}
-			}
-			updateHitbox();
+			// Change hitbox here
+			originalCenter = this.origin;
+			this.scale.set(5, 5);
+			this.updateHitbox();
+			this.x -= originalCenter.x;
+			this.y -= originalCenter.y;
 		}
-
-		if (Timer.stamp() - attackTimer > attackCD) // keep hitbox active for 2 seconds
+		// Length of attack functions here
+		velocity.set(0, 0);
+		if (Timer.stamp() - attackTimer > attackCD) // Retract hitbox after a certain amount of time has passed
 		{
 			isAttacking = false;
 			attackTimer = 0;
-			setGraphicSize(18 * 3, 20 * 3);
-			x += originalX;
-			y += originalY;
-			updateHitbox();
+			this.scale.set(3, 3);
+			this.updateHitbox();
+			this.x += originalCenter.x;
+			this.y += originalCenter.y;
 		}
 	}
 
 	function createAnimations()
 	{
-		animation.add("right", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], animRate, true, false, false);
-		animation.add("left", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], animRate, true, true, false);
+		animation.add("right", [for (i in(0...12)) i], animRate, true, false, false);
+		animation.add("left", [for (i in(0...12)) i], animRate, true, true, false);
 	}
 }
