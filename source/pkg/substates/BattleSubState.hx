@@ -5,12 +5,14 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.text.FlxText;
+import flixel.util.FlxSort;
 import pkg.enemy.Bat;
 import pkg.enemy.Enemy;
 import pkg.enemy.Ghost;
 import pkg.player.Player;
 import pkg.player.UI;
 import pkg.player.Weapon;
+import pkg.room.Room;
 
 /**
 	Battle sub state. Includes logic for rooms,
@@ -23,11 +25,15 @@ class BattleSubState extends FlxSubState
 	var player:Player;
 	var enemy:Bat;
 	var weapon:Weapon;
+	var room:Room;
 	// var ui:UI;
 	var healthText:FlxText;
 
 	override public function create()
 	{
+		this.room = new Room();
+		add(this.room);
+
 		// Things with logic tied to them
 		player = new Player(200, 200);
 		add(player);
@@ -50,6 +56,11 @@ class BattleSubState extends FlxSubState
 		// ui.updateUI(player);
 		healthText.text = Std.string(enemy.health);
 		super.update(elapsed);
-		// trace("Updated in battle state");
+		trace("Updated in battle state");
+	}
+
+	public function checkHitboxes()
+	{
+		this.room.checkWallHitboxes([player, enemy]);
 	}
 }
