@@ -32,17 +32,18 @@ class BattleSubState extends FlxSubState
 	{
 		this.player = new Player(500, 500);
 		this.room = new Room();
-		this.room.createRoomObstacles([this.player]);
 
 		// Room is added independently of obstacles
 		// within the room and the player, due to sort
 		// group
 		add(this.room);
 
-		// this.enemy = new Enemy(400, 400);
+		this.enemy = new Enemy(400, 400);
 		// add(this.weapon);
 		// this.ui = new UI(20, FlxG.height - 22);
 		// add(this.ui);
+
+		this.room.createRoomObstacles([this.player, this.enemy]);
 
 		super.create();
 	}
@@ -50,7 +51,7 @@ class BattleSubState extends FlxSubState
 	override public function update(elapsed:Float)
 	{
 		this.checkHitboxes();
-		// this.enemy.trackPlayer(player);
+		this.enemy.trackPlayer(player);
 		// this.weapon.move(player, enemy);
 		// this.ui.updateUI(player);
 
