@@ -39,7 +39,7 @@ class Room extends FlxSpriteGroup
 	{
 		// Default room is level 1
 		var trueAssetPath:String;
-		if (assetPath == null)
+		if (assetPath != null)
 		{
 			trueAssetPath = assetPath;
 		}
@@ -48,7 +48,7 @@ class Room extends FlxSpriteGroup
 			trueAssetPath = AssetPaths.level1__png;
 		}
 
-		this.roomBg = new FlxSprite(AssetPaths.level1__png);
+		this.roomBg = new FlxSprite(trueAssetPath);
 		this.roomBg.setGraphicSize(Math.round(this.roomBg.width * 3), Math.round(this.roomBg.height * 3));
 		this.roomBg.setPosition(288, 192); // default width, height of level
 		add(this.roomBg);

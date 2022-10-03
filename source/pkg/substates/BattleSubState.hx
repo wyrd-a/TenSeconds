@@ -8,6 +8,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxSort;
 import haxe.macro.Type.AbstractType;
+import pkg.config.Config;
 import pkg.enemy.Bat;
 import pkg.enemy.Bomb;
 import pkg.enemy.Ghost;
@@ -47,7 +48,7 @@ class BattleSubState extends FlxSubState
 	override public function create()
 	{
 		this.player = new Player(500, 500);
-		this.room = new Room();
+		this.room = new Room(AssetPaths.level2__png);
 
 		// Room is added independently of obstacles
 		// within the room and the player, due to sort
