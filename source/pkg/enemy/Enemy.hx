@@ -3,29 +3,44 @@ package pkg.enemy;
 import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.input.gamepad.mappings.XInputMapping;
 import flixel.math.FlxMath;
+import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.tile.FlxTilemap.GraphicAuto;
 import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import haxe.Timer;
+import haxe.macro.Type.AbstractType;
+import openfl.display.Graphics;
 
 /**
 	This is the enemy. AI and damage dealing is handled here.
 **/
 class Enemy extends FlxSprite
 {
-	var MAXSPEED:Float = 80;
-	var isCharging:Bool = false;
+	public var isCharging:Bool = false;
+
 	var chargeTimer:Float = 0;
-	var isAttacking:Bool = false;
+
+	public var isAttacking:Bool = false;
+
 	var attackTimer:Float = 0;
 
 	var targetX:Float;
 	var targetY:Float;
 
-	var originalX:Int;
-	var originalY:Int;
+	var originalX:Float;
+	var originalY:Float;
+	var originalWidth:Float;
+	var originalHeight:Float;
 
-	var CLOSEDISTANCE:Int;
+	// Variables meant to be changed for different enemies
+	var tooCloseDist:Int;
+	var attackCD:Int;
+	var chargeCD:Int;
+	var iframeCD:Int;
+	var maxSpeed:Float;
+	var aggroRange:Int;
 
 	// immunity frames
 	var oldHealth:Float;
@@ -33,17 +48,19 @@ class Enemy extends FlxSprite
 	var iframeCounter:Float = 0;
 	var flashTimer:Float = 0;
 
-	public function new(x:Float = 0, y:Float = 0, CLOSEDISTANCE:Int = 0)
+	var animRate:Int = 8;
+
+	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(AssetPaths.Enemy1__png);
+		makeGraphic(64, 64, FlxColor.GREEN);
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
-		health = 20;
 	}
 
 	override public function update(elapsed:Float):Void
 	{
+		deathCheck();
 		super.update(elapsed);
 	}
 
@@ -59,100 +76,101 @@ class Enemy extends FlxSprite
 		FlxG.overlap(player, this, playerHurt);
 		FlxG.collide(player, this);
 
-		if (isAttacking) // check to see if enemy is attacking
-		{
-			attack(player);
-		}
-		else if (isCharging) // check to see if target started an attack
+		if (isCharging || isAttacking) // check to see if target started an attack
 		{
 			chargeAttack();
 		}
-		else if (tooClose(player)) // move towards player
-		{
-			approach(player, -1 * MAXSPEED);
-		}
 		else
 		{
-			approach(player, MAXSPEED);
+			approach(player, maxSpeed);
 		}
 	}
 
+	/**Determine if player is close enough to enemy to attack**/
 	function target(player:FlxSprite)
 	{
-		if (FlxMath.distanceBetween(player, this) < 80)
+		if (FlxMath.distanceBetween(player, this) < aggroRange)
 		{
-			isCharging = true;
 			velocity.x = 0;
 			velocity.y = 0;
+			if (!isAttacking) // Check to make sure an attack isn't going on
+			{
+				isCharging = true;
+			}
 		}
 	}
 
+	/**Prepare to attack player, only usable if target has located the player. Should always follow target.**/
 	function chargeAttack()
 	{
 		immovable = true;
 		if (chargeTimer == 0)
 		{
 			chargeTimer = Timer.stamp();
-			loadGraphic(AssetPaths.Enemy2__png);
 		}
-		if (Timer.stamp() - chargeTimer > 3)
+		else if (Timer.stamp() - chargeTimer > chargeCD)
 		{
 			isAttacking = true;
 			isCharging = false;
+			chargeTimer = 0;
 		}
 	}
 
+	/**Does the attack. Default is to expand in a direction towards the player and then contract. Overwrite to increase functionality.**/
 	function attack(player:FlxSprite)
 	{
 		chargeTimer = 0;
-		if (attackTimer == 0)
+		if (attackTimer == 0) // Only runs once
 		{
-			loadGraphic(AssetPaths.Enemy1__png);
 			attackTimer = Timer.stamp();
-			if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Calculate where player is relative to enemy (attack in 4 cardinal directions)
+			originalWidth = width;
+			originalHeight = height;
+			// Calculate where player is relative to enemy and extend hitbox
+			if (Math.abs(player.x - x) > Math.abs(player.y - y))
 			{
-				originalY = 0;
+				originalY = y;
 				if (player.x > x)
 				{
-					setGraphicSize(108, 20 * 3); // Extend hitbox to the right
-					originalX = 0;
+					setGraphicSize(Std.int(this.width * 2), Std.int(this.height)); // Extend hitbox to the right
+					originalX = x;
 				}
 				else
 				{
-					setGraphicSize(108, 20 * 3); // Extend hitbox to the left
-					x -= 54;
-					originalX = 54;
+					setGraphicSize(Std.int(this.width * 2), Std.int(this.height)); // Extend hitbox to the left
+					originalX = x;
+					x -= this.width / 2;
 				}
 			}
 			else
 			{
-				originalX = 0;
+				originalX = x;
 				if (player.y > y)
 				{
-					setGraphicSize(18 * 3, 120); // Extend hitbox upward
-					originalY = 0;
+					setGraphicSize(Std.int(this.width), Std.int(this.height * 2)); // Extend hitbox upward
+					originalY = y;
 				}
 				else
 				{
-					setGraphicSize(18 * 3, 120); // Extend hitbox downward
-					y -= 60;
-					originalY = 60;
+					setGraphicSize(Std.int(this.width), Std.int(this.height * 2)); // Extend hitbox downward
+					originalY = y;
+					y -= this.height / 2;
 				}
 			}
 			updateHitbox();
 		}
 
-		if (Timer.stamp() - attackTimer > 2) // keep hitbox active for 2 seconds
+		if (Timer.stamp() - attackTimer > attackCD) // Retract hitbox after a certain amount of time has passed
 		{
 			isAttacking = false;
 			attackTimer = 0;
-			setGraphicSize(18 * 3, 20 * 3);
-			x += originalX;
-			y += originalY;
+			setGraphicSize(Std.int(originalWidth), Std.int(originalHeight));
+			x = originalX;
+			y = originalY;
 			updateHitbox();
 		}
 	}
 
+	/**Function that damages the first object. Should be called with FlxG.overlap()**/
 	function playerHurt(objA:FlxSprite, objB:FlxSprite):Void
 	{
 		objA.health -= 1;
@@ -165,9 +183,15 @@ class Enemy extends FlxSprite
 		{
 			velocity.y = 0;
 			if (player.x > x) // Move positive or negative x
+			{
 				velocity.x = vel;
+				animation.play("right");
+			}
 			else
+			{
 				velocity.x = -1 * vel;
+				animation.play("left");
+			}
 		}
 		else
 		{
@@ -183,9 +207,10 @@ class Enemy extends FlxSprite
 		}
 	}
 
+	/**Determine if the enemy should run away from the player. Not sure if this code works.**/
 	function tooClose(player:FlxSprite)
 	{
-		if (FlxMath.distanceBetween(player, this) < CLOSEDISTANCE)
+		if (FlxMath.distanceBetween(player, this) < tooCloseDist)
 		{
 			return true;
 		}
@@ -195,23 +220,25 @@ class Enemy extends FlxSprite
 		}
 	}
 
+	/**Provides i-frames and keeps the enemy alive until it dies. Called in Enemy class definition.**/
 	function deathCheck()
 	{
-		if (health < oldHealth)
+		if (health < 0)
 		{
-			oldHealth = health;
+			kill();
+		}
+		else if (((health != oldHealth) && !iframes))
+		{
 			iframes = true;
+			oldHealth = health;
 		}
 		if (iframes)
 		{
 			immunity();
 		}
-		if (health < 0)
-		{
-			kill();
-		}
 	}
 
+	/**More i-frame functionality. Called by deathCheck() function.**/
 	function immunity()
 	{
 		health = oldHealth;
@@ -220,7 +247,7 @@ class Enemy extends FlxSprite
 			iframeCounter = Timer.stamp();
 			flashTimer = Timer.stamp();
 		}
-		if (Timer.stamp() - iframeCounter > 2) // This is how long they're immune
+		if (Timer.stamp() - iframeCounter > iframeCD) // This is how long they're immune
 		{
 			iframes = false;
 			iframeCounter = 0;

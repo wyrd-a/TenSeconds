@@ -22,7 +22,6 @@ class StartState extends FlxState
 		startBg.loadGraphic(AssetPaths.dumbcat1__jpg);
 
 		add(startBg);
-		add(startButton);
 		this.createButtons();
 	}
 
@@ -38,7 +37,7 @@ class StartState extends FlxState
 		this.sfxVolButton.setPosition(Config.CENTER_WIDTH - this.sfxVolButton.width / 2, Config.CENTER_HEIGHT);
 		this.musicVolButton.setPosition(Config.CENTER_WIDTH - this.musicVolButton.width / 2, Config.CENTER_HEIGHT + 200);
 
-		add(this.startButton);
+		add(this.startButton); // Start button is added here don't need to call it again
 		add(this.sfxVolButton);
 		add(this.musicVolButton);
 	}

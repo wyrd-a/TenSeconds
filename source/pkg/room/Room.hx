@@ -91,8 +91,8 @@ class Room extends FlxSpriteGroup
 		{
 			for (index => collidingSprite in sprites)
 			{
-				FlxG.collide(bound, collidingSprite);
 				bound.updateHitbox();
+				FlxG.collide(bound, collidingSprite);
 			}
 		}
 	}

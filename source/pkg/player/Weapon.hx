@@ -2,27 +2,35 @@ package pkg.player;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
+import haxe.Timer;
 
 /**
 	This is the weapon. Idk how it works.
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = 2;
-	var DIST:Float = 75;
+	var VEL:Float = 5;
 
+	public var DIST:Float = 75;
+	public var CHARGE:Float = 350;
 	public var targetAngle:Float;
+
+	public var spunUp:Bool = false;
+
+	var spinTimer:Float = 0;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		loadGraphic(AssetPaths.weapon__png, true, 9, 27);
-		animation.add("uncharged", [2], 60, true, false, true);
-		animation.add("charged", [1], 60, true, false, true);
-		setGraphicSize(27, 0);
+		loadGraphic(AssetPaths.weapon__png, true, 11, 29);
+		animation.add("uncharged", [1], 60, true, false, true);
+		animation.add("charged", [0], 60, true, false, true);
+		setGraphicSize(Std.int(3 * this.width), 0);
 		updateHitbox();
-		angularDrag = 400;
+		angularDrag = 100;
+		maxAngular = 1000;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -36,44 +44,62 @@ class Weapon extends FlxSprite
 		// control angle
 		targetAngle = angleControl(player);
 
-		// choose angular speed
-		if (targetAngle == 69420)
-		{
-			angularAcceleration = 0;
-		}
-		else if (angle > targetAngle)
-		{
-			if (angle > targetAngle + 180)
+		if (!spunUp)
+		{ // choose angular speed
+			if (targetAngle == 69420)
 			{
-				angularAcceleration = VEL * Math.abs(angle - 360 - targetAngle);
+				angularAcceleration = 0;
 			}
-			else
+			else if (angle > targetAngle)
 			{
-				angularAcceleration = -1 * VEL * Math.abs(angle - targetAngle);
+				if (angle > targetAngle + 180)
+				{
+					angularVelocity += VEL;
+				}
+				else
+				{
+					angularVelocity += -1 * VEL;
+				}
 			}
-		}
-		else if (angle < targetAngle)
-		{
-			if (angle > targetAngle - 180)
+			else if (angle < targetAngle)
 			{
-				angularAcceleration = VEL * Math.abs(angle - targetAngle);
+				if (angle > targetAngle - 180)
+				{
+					angularVelocity += VEL;
+				}
+				else
+				{
+					angularVelocity += -1 * VEL;
+				}
 			}
-			else
-			{
-				angularAcceleration = -1 * VEL * Math.abs(angle + 360 - targetAngle);
-			}
-		}
-
-		// Weapon color change
-		if (Math.abs(angularVelocity) > 200)
-		{
-			animation.play("charged");
-			// color = 0x8871C2; // Swap this with graphical change
 		}
 		else
 		{
-			animation.play("uncharged");
-			// color = 0x030904; // Swap this with graphical change
+			if (angularVelocity > 0)
+			{
+				angularVelocity = CHARGE + 10;
+			}
+			else
+			{
+				angularVelocity = -1 * (CHARGE + 10);
+			}
+			if (spinTimer == 0)
+			{
+				spinTimer = Timer.stamp();
+			}
+			if ((Timer.stamp() - spinTimer > 5) || !spunUp)
+			{
+				spunUp = false;
+				if (angularVelocity > 0)
+				{
+					angularVelocity = 150;
+				}
+				else
+				{
+					angularVelocity = -150;
+				}
+				spinTimer = 0;
+			}
 		}
 
 		// Weapon position on screen
@@ -90,7 +116,16 @@ class Weapon extends FlxSprite
 			angle = 0;
 		}
 
-		FlxG.collide(enemy, this, hurtEnemy); // hurt the enemy!
+		// Weapon charge animation
+		if (Math.abs(angularVelocity) > CHARGE)
+		{
+			spunUp = true;
+			animation.play("charged");
+		}
+		else
+		{
+			animation.play("uncharged");
+		}
 	}
 
 	//**Calculates where the weapon is relative to the player and the weapon's rotational speed.**/
@@ -141,11 +176,5 @@ class Weapon extends FlxSprite
 				return 69420;
 			}
 		}
-	}
-
-	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
-	{
-		objA.health -= 1;
-		objB.health -= 1;
 	}
 }
