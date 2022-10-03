@@ -19,7 +19,9 @@ class Player extends FlxSprite
 
 	// immunity stuff
 	var oldHealth:Float;
-	var iframes:Bool = false;
+
+	public var iframes:Bool = false;
+
 	var iframeCounter:Float = 0;
 	var flashTimer:Float = 0;
 
@@ -143,14 +145,9 @@ class Player extends FlxSprite
 
 	function deathCheck()
 	{
-		if (health < 0)
+		if (health <= 0)
 		{
 			kill();
-		}
-		else if ((health != oldHealth && !iframes))
-		{
-			iframes = true;
-			oldHealth = health;
 		}
 		if (iframes)
 		{
@@ -160,8 +157,6 @@ class Player extends FlxSprite
 
 	function immunity()
 	{
-		health = oldHealth;
-		currentHealth = health;
 		if (iframeCounter == 0)
 		{
 			iframeCounter = Timer.stamp();
@@ -184,6 +179,15 @@ class Player extends FlxSprite
 			{
 				alpha = 0.5;
 			}
+		}
+	}
+
+	public function takeDamage()
+	{
+		if (!iframes)
+		{
+			iframes = true;
+			health -= 1;
 		}
 	}
 

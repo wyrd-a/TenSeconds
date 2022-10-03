@@ -12,6 +12,7 @@ import flixel.util.FlxColor;
 import haxe.Timer;
 import haxe.macro.Type.AbstractType;
 import openfl.display.Graphics;
+import pkg.player.Player;
 
 /**
 	This is the enemy. AI and damage dealing is handled here.
@@ -44,7 +45,9 @@ class Enemy extends FlxSprite
 
 	// immunity frames
 	var oldHealth:Float;
-	var iframes:Bool = false;
+
+	public var iframes:Bool = false;
+
 	var iframeCounter:Float = 0;
 	var flashTimer:Float = 0;
 
@@ -171,9 +174,9 @@ class Enemy extends FlxSprite
 	}
 
 	/**Function that damages the first object. Should be called with FlxG.overlap()**/
-	function playerHurt(objA:FlxSprite, objB:FlxSprite):Void
+	function playerHurt(objA:Player, objB:FlxSprite):Void
 	{
-		objA.health -= 1;
+		objA.takeDamage();
 	}
 
 	/**Move the enemy. Positive vel moves towards player, negative vel moves away.**/
@@ -223,14 +226,9 @@ class Enemy extends FlxSprite
 	/**Provides i-frames and keeps the enemy alive until it dies. Called in Enemy class definition.**/
 	function deathCheck()
 	{
-		if (health < 0)
+		if (health <= 0)
 		{
-			kill();
-		}
-		else if (((health != oldHealth) && !iframes))
-		{
-			iframes = true;
-			oldHealth = health;
+			this.kill();
 		}
 		if (iframes)
 		{
@@ -238,10 +236,18 @@ class Enemy extends FlxSprite
 		}
 	}
 
+	public function takeDamage()
+	{
+		if (!iframes)
+		{
+			iframes = true;
+			health -= 1;
+		}
+	}
+
 	/**More i-frame functionality. Called by deathCheck() function.**/
 	function immunity()
 	{
-		health = oldHealth;
 		if (iframeCounter == 0)
 		{
 			iframeCounter = Timer.stamp();

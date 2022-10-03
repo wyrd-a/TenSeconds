@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
+import pkg.enemy.Enemy;
 
 /**Real jank way of moving hitbox off of weapon to tip of weapon, but hey it works.**/
 class WeaponGroup extends FlxSpriteGroup
@@ -43,11 +44,11 @@ class WeaponGroup extends FlxSpriteGroup
 		}
 	}
 
-	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
+	function hurtEnemy(objA:Enemy, objB:FlxSprite):Void
 	{
-		objA.health -= 1;
-		// weapon.angularVelocity = 0; // This creates the "hit" feel
+		objA.takeDamage();
 		weapon.spunUp = false;
+		weapon.angularVelocity = 0;
 		// play SFX
 	}
 }

@@ -9,6 +9,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import haxe.Timer;
 import pkg.config.Config;
+import pkg.player.Player;
 import pkg.room.RoomData;
 
 /**This is the bomb that drops upon enemy death and the room selection for some reason**/
@@ -26,6 +27,13 @@ class Bomb extends FlxSpriteGroup
 	var downRoom:RoomData;
 	var rightRoom:RoomData;
 	var leftRoom:RoomData;
+
+	var roomBarriers:FlxSprite;
+
+	var leftBord:FlxSprite;
+	var rightBord:FlxSprite;
+	var topBord:FlxSprite;
+	var bottomBord:FlxSprite;
 
 	public var startNewRoom:Bool = false;
 	public var playerWon:Int = 0;
@@ -56,6 +64,45 @@ class Bomb extends FlxSpriteGroup
 		leftRoom = new RoomData(x, y);
 		add(leftRoom);
 
+		roomBarriers = new FlxSprite(0, 0);
+		roomBarriers.loadGraphic(AssetPaths.barriers__png, true, 288, 192);
+		roomBarriers.animation.add("1", [0]);
+		roomBarriers.animation.add("2", [1]);
+		roomBarriers.animation.add("3", [2]);
+		roomBarriers.animation.play(Std.string(Config.roomLevel));
+		add(roomBarriers);
+		roomBarriers.scale.set(3, 3);
+		roomBarriers.updateHitbox();
+		roomBarriers.setPosition(0, 0);
+
+		leftBord = new FlxSprite(0, 0);
+		leftBord.makeGraphic(1000, 1000);
+		leftBord.setPosition(-910, 0);
+		leftBord.alpha = 0.0;
+		add(leftBord);
+		leftBord.immovable = true;
+
+		rightBord = new FlxSprite(0, 0);
+		rightBord.makeGraphic(1000, 1000);
+		rightBord.setPosition(860, 0);
+		rightBord.alpha = 0.0;
+		add(rightBord);
+		rightBord.immovable = true;
+
+		topBord = new FlxSprite(0, 0);
+		topBord.makeGraphic(1000, 1000);
+		topBord.setPosition(0, -900);
+		topBord.alpha = 0;
+		add(topBord);
+		topBord.immovable = true;
+
+		bottomBord = new FlxSprite(0, 0);
+		bottomBord.makeGraphic(1000, 1000);
+		bottomBord.setPosition(0, 570);
+		bottomBord.alpha = 0;
+		add(bottomBord);
+		bottomBord.immovable = true;
+
 		bombSFX = FlxG.sound.load(AssetPaths.BombSFX__mp3, 1);
 		bellSFX = FlxG.sound.load(AssetPaths.Bell__wav, 1);
 	}
@@ -67,6 +114,7 @@ class Bomb extends FlxSpriteGroup
 
 	public function countdown(player:FlxSprite, enemy:FlxSprite)
 	{
+		collideWithBorder(player);
 		if (!player.alive)
 		{
 			playerWon = -1;
@@ -76,6 +124,7 @@ class Bomb extends FlxSpriteGroup
 		{
 			if (bombTimer == 0)
 			{
+				boundaryKill();
 				bombTimer = Timer.stamp();
 				x = enemy.x + enemy.origin.x;
 				y = enemy.y + enemy.origin.y;
@@ -137,5 +186,22 @@ class Bomb extends FlxSpriteGroup
 			playerWon = 1;
 			startNewRoom = true;
 		}
+	}
+
+	function collideWithBorder(player:FlxSprite)
+	{
+		FlxG.collide(player, leftBord);
+		FlxG.collide(player, rightBord);
+		FlxG.collide(player, topBord);
+		FlxG.collide(player, bottomBord);
+	}
+
+	function boundaryKill()
+	{
+		roomBarriers.kill();
+		leftBord.kill();
+		rightBord.kill();
+		topBord.kill();
+		bottomBord.kill();
 	}
 }

@@ -13,7 +13,7 @@ class UI extends FlxSpriteGroup
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super();
-		healthBar = new FlxSprite(x, y).makeGraphic(100, 20, 0xd13131);
+		healthBar = new FlxSprite(x, y).makeGraphic(100, 20, FlxColor.RED);
 		add(healthBar);
 		healthText = new FlxText(x, y + 6);
 		add(healthText);
@@ -29,9 +29,9 @@ class UI extends FlxSpriteGroup
 	{
 		if (player.health > 0)
 		{
-			healthBar.setGraphicSize(Std.int(20 * player.currentHealth), 20);
+			healthBar.setGraphicSize(Std.int(20 * player.health), 20);
 			healthBar.updateHitbox();
-			healthText.text = player.currentHealth + " / " + player.maxHealth;
+			healthText.text = player.health + " / " + player.maxHealth;
 		}
 	}
 }

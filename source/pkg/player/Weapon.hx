@@ -3,6 +3,7 @@ package pkg.player;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxAngle;
 import flixel.util.FlxColor;
 import haxe.Timer;
 
@@ -11,7 +12,7 @@ import haxe.Timer;
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = 5;
+	var VEL:Float = 4;
 
 	public var DIST:Float = 75;
 	public var CHARGE:Float = 350;
@@ -42,7 +43,8 @@ class Weapon extends FlxSprite
 	public function move(player:FlxSprite, enemy:FlxSprite)
 	{
 		// control angle
-		targetAngle = angleControl(player);
+		// targetAngle = angleControl(player);
+		targetAngle = FlxAngle.angleBetweenMouse(player, true) - 90;
 
 		if (!spunUp)
 		{ // choose angular speed
@@ -106,14 +108,14 @@ class Weapon extends FlxSprite
 		x = (-1 * DIST * Math.sin(angle / 180 * Math.PI)) + player.x + (player.width / 2) - (width / 2);
 		y = (DIST * Math.cos(angle / 180 * Math.PI)) + player.y + (player.height / 2) - (height / 2);
 
-		// Keep angle between 360 and 0
-		if (angle < 0)
+		// Keep angle between -180 and 180
+		if (angle < -180)
 		{
-			angle = 360;
+			angle = 180;
 		}
-		if (angle > 360)
+		if (angle > 180)
 		{
-			angle = 0;
+			angle = -180;
 		}
 
 		// Weapon charge animation

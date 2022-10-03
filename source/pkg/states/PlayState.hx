@@ -3,6 +3,7 @@ package pkg.states;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxSubState;
+import flixel.input.FlxAccelerometer;
 import pkg.config.Config;
 import pkg.substates.BattleSubState;
 import pkg.substates.LoseSubState;
@@ -83,6 +84,7 @@ class PlayState extends FlxState
 	{
 		if (battleSubState.startNewRoom)
 		{
+			FlxG.sound.destroy();
 			if (battleSubState.playerWon == 1)
 			{
 				battleSubState.close();
@@ -116,13 +118,14 @@ class PlayState extends FlxState
 			case 2:
 				if (songTracker != 2)
 				{
-					FlxG.sound.playMusic(AssetPaths.Mechanical_Monstrosity_Loop__ogg);
+					FlxG.sound.playMusic(AssetPaths.Wandering_Beast_Loop__ogg);
 					songTracker = 2;
 				}
 			case 3:
 				if (songTracker != 3)
 				{
-					FlxG.sound.playMusic(AssetPaths.Wandering_Beast_Loop__ogg);
+					FlxG.sound.playMusic(AssetPaths.Mechanical_Monstrosity_Loop__ogg);
+
 					songTracker = 3;
 				}
 			case 4:

@@ -12,6 +12,7 @@ import haxe.macro.Type.AbstractType;
 import pkg.config.Config;
 import pkg.enemy.Bat;
 import pkg.enemy.Bomb;
+import pkg.enemy.Boss;
 import pkg.enemy.Ghost;
 import pkg.enemy.Rat;
 import pkg.enemy.Scarecrow;
@@ -44,6 +45,7 @@ class BattleSubState extends FlxSubState
 	var bat:Bat;
 	var scarecrow:Scarecrow;
 	var rat:Rat;
+	var boss:Boss;
 	var enemyArray:Array<Dynamic>;
 	var enemyNum:Int;
 	var enemy:Dynamic;
@@ -61,6 +63,9 @@ class BattleSubState extends FlxSubState
 		// group
 		add(this.room);
 
+		bomb = new Bomb(-50, -50);
+		add(bomb);
+
 		// Things with logic tied to them
 		this.player = new Player(200, 200);
 
@@ -68,15 +73,14 @@ class BattleSubState extends FlxSubState
 		enemyCreation();
 
 		// Adds player and enemy
-		this.room.createRoomObstacles([this.player, this.enemy]);
-
-		bomb = new Bomb(-50, -50);
-		add(bomb);
+		// this.room.createRoomObstacles([this.player, this.enemy]);
+		add(player);
+		add(enemy);
 
 		this.weapon = new WeaponGroup();
 		add(this.weapon);
 
-		this.ui = new UI(20, 20);
+		this.ui = new UI(80, 80);
 		add(this.ui);
 
 		fadeToBlack = new FlxSprite(0, 0);
@@ -127,12 +131,13 @@ class BattleSubState extends FlxSubState
 		ghost = new Ghost(400, 400);
 		scarecrow = new Scarecrow(400, 400);
 		rat = new Rat(400, 400);
-		enemyArray[0] = bat;
+		boss = new Boss(400, 400);
+		enemyArray[0] = scarecrow;
 		enemyArray[1] = ghost;
-		enemyArray[2] = scarecrow;
-		enemyArray[3] = rat;
+		enemyArray[2] = bat;
+		enemyArray[3] = boss;
 		enemyNum = Math.floor(enemyArray.length * Math.random());
-		this.enemy = this.enemyArray[enemyNum];
+		this.enemy = this.enemyArray[Config.roomLevel - 1];
 	}
 
 	function swapLevel()
