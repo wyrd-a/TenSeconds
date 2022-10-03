@@ -35,32 +35,33 @@ class BattleSubState extends FlxSubState
 		add(this.room);
 
 		// Things with logic tied to them
-		player = new Player(200, 200);
-		add(player);
-		enemy = new Bat(400, 400);
-		add(enemy);
-		weapon = new Weapon();
-		add(weapon);
+		this.player = new Player(200, 200);
+		add(this.player);
+		this.enemy = new Bat(400, 400);
+		add(this.enemy);
+		this.weapon = new Weapon();
+		add(this.weapon);
 		// ui = new UI(20, FlxG.height - 22);
 		// add(ui);
 
-		healthText = new FlxText(40, 40);
+		this.healthText = new FlxText(40, 40);
 		add(healthText);
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
-		enemy.trackPlayer(player);
-		weapon.move(player, enemy);
+		this.checkHitboxes();
+		this.enemy.trackPlayer(this.player);
+		this.weapon.move(this.player, this.enemy);
 		// ui.updateUI(player);
-		healthText.text = Std.string(enemy.health);
+		this.healthText.text = Std.string(this.enemy.health);
 		super.update(elapsed);
 		trace("Updated in battle state");
 	}
 
 	public function checkHitboxes()
 	{
-		this.room.checkWallHitboxes([player, enemy]);
+		this.room.checkWallHitboxes([this.player, this.enemy]);
 	}
 }
