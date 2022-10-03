@@ -9,7 +9,7 @@ import flixel.util.FlxColor;
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = 2;
+	var VEL:Float = .15;
 	var DIST:Float = 75;
 	var CHARGE:Float = 200;
 
@@ -24,7 +24,8 @@ class Weapon extends FlxSprite
 		setGraphicSize(Std.int(3 * this.width), 0);
 		updateHitbox();
 
-		angularDrag = 400;
+		angularDrag = 200;
+		maxAngular = 400;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -47,22 +48,22 @@ class Weapon extends FlxSprite
 		{
 			if (angle > targetAngle + 180)
 			{
-				angularAcceleration = VEL * Math.abs(angle - 360 - targetAngle);
+				angularVelocity += VEL * Math.abs(angle - 360 - targetAngle);
 			}
 			else
 			{
-				angularAcceleration = -1 * VEL * Math.abs(angle - targetAngle);
+				angularVelocity += -1 * VEL * Math.abs(angle - targetAngle);
 			}
 		}
 		else if (angle < targetAngle)
 		{
 			if (angle > targetAngle - 180)
 			{
-				angularAcceleration = VEL * Math.abs(angle - targetAngle);
+				angularVelocity += VEL * Math.abs(angle - targetAngle);
 			}
 			else
 			{
-				angularAcceleration = -1 * VEL * Math.abs(angle + 360 - targetAngle);
+				angularVelocity += -1 * VEL * Math.abs(angle + 360 - targetAngle);
 			}
 		}
 
@@ -84,7 +85,7 @@ class Weapon extends FlxSprite
 		if (Math.abs(angularVelocity) > CHARGE)
 		{
 			animation.play("charged");
-			FlxG.collide(enemy, this, hurtEnemy); // hurt the enemy!
+			FlxG.overlap(enemy, this, hurtEnemy); // hurt the enemy!
 		}
 		else
 		{
@@ -145,6 +146,6 @@ class Weapon extends FlxSprite
 	function hurtEnemy(objA:FlxSprite, objB:FlxSprite):Void
 	{
 		objA.health -= 1;
-		objB.health -= 1;
+		angularVelocity = 0; // This creates the "hit" feel
 	}
 }

@@ -34,7 +34,7 @@ class Player extends FlxSprite
 	{
 		super(x, y);
 		loadGraphic(AssetPaths.player_move__png, true, 24, 24);
-		offset.set(10, 10);
+		offset.set(0, 6);
 		setGraphicSize(72, 72);
 		createAnimations();
 		health = 5; // sets player's health

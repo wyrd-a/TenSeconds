@@ -25,7 +25,7 @@ class BattleSubState extends FlxSubState
 	public var isPersistent:Bool = true;
 
 	var player:Player;
-	var enemy:Scarecrow;
+	var enemy:Bat;
 	var weapon:Weapon;
 	var room:Room;
 	var ui:UI;
@@ -39,8 +39,8 @@ class BattleSubState extends FlxSubState
 		// Things with logic tied to them
 		this.player = new Player(200, 200);
 		add(this.player);
-		enemy = new Scarecrow(400, 400);
-		// add(this.enemy);
+		enemy = new Bat(400, 400);
+		add(this.enemy);
 		this.weapon = new Weapon();
 		add(this.weapon);
 		this.ui = new UI(20, FlxG.height - 22);
@@ -56,7 +56,7 @@ class BattleSubState extends FlxSubState
 		this.checkHitboxes();
 		this.enemy.aiWorkings(this.player);
 		this.weapon.move(this.player, this.enemy);
-		this.ui.updateUI(player, weapon);
+		this.ui.updateUI(player);
 		super.update(elapsed);
 	}
 
