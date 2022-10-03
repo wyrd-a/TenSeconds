@@ -25,6 +25,7 @@ class Player extends FlxSprite
 
 	// Track UI health
 	public var currentHealth:Float;
+	public var maxHealth:Float = 5;
 
 	// animation stuff
 	var animationNumber:Int;
@@ -37,7 +38,7 @@ class Player extends FlxSprite
 		offset.set(0, 6);
 		setGraphicSize(72, 72);
 		createAnimations();
-		health = 5; // sets player's health
+		health = maxHealth; // sets player's health
 		oldHealth = health; // for tracking i-frames
 		currentHealth = health;
 	}

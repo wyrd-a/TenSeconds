@@ -31,7 +31,7 @@ class UI extends FlxSpriteGroup
 		{
 			healthBar.setGraphicSize(Std.int(20 * player.currentHealth), 20);
 			healthBar.updateHitbox();
-			healthText.text = player.currentHealth + " / 5";
+			healthText.text = player.currentHealth + " / " + player.maxHealth;
 		}
 	}
 }
