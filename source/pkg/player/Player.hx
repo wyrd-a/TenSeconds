@@ -46,7 +46,7 @@ class Player extends FlxSprite
 	override public function update(elapsed:Float):Void
 	{
 		move();
-		boundToBorder();
+		// boundToBorder();
 		super.update(elapsed);
 		deathCheck();
 	}

@@ -7,6 +7,7 @@ class Config
 	public static var CENTER_HEIGHT:Int = Math.floor(WINDOW_HEIGHT / 2);
 	public static var CENTER_WIDTH:Int = Math.floor(WINDOW_WIDTH / 2);
 
-	public var roomLevel:Int;
-	public var roomFlavor:String;
+	public static var roomLevel:Int = 1;
+	public static var roomFlavor:String = "Bitter";
+	public static var roomLevelName:String = AssetPaths.level1__png;
 }

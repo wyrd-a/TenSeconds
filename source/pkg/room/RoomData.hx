@@ -2,15 +2,21 @@ package pkg.room;
 
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
-import flixel.ui.FlxText;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import pkg.config.Config;
 
 class RoomData extends FlxSpriteGroup
 {
 	var powerUp:FlxSprite;
 	var roomType:FlxText;
 
-	public var roomLevel:String;
+	public var roomLevelName:String;
+	public var roomLevelNumber:Int;
+
 	public var powerUpName:String;
+
+	var powerUpText:FlxText;
 
 	var randPower:Int;
 	var randLevel:Int;
@@ -34,7 +40,51 @@ class RoomData extends FlxSpriteGroup
 		powerUp.loadGraphic(AssetPaths.items__png, true, 27, 14);
 		choosePowerUpGraphic();
 		powerUp.animation.play(powerUpName);
-		add(powerUp);
+		// add(powerUp);
+
+		powerUpText = new FlxText(x, y + 16, 0, "Flavor");
+		powerUpText.color = FlxColor.BLACK;
+		powerUpText.text = "Flavor: " + powerUpName;
+		add(powerUpText);
+
+		roomType = new FlxText(x, y);
+		roomType.color = FlxColor.BLACK;
+		switch (Config.roomLevel)
+		{
+			case 1: // if current room is level 1
+				if (Math.random() > 0.5)
+				{
+					roomLevelName = AssetPaths.level2__png;
+					roomLevelNumber = 2;
+					roomType.text = "Difficulty: Medium";
+				}
+				else
+				{
+					roomLevelName = AssetPaths.level1__png;
+					roomLevelNumber = 1;
+					roomType.text = "Difficulty: Easy";
+				}
+			case 2:
+				if (Math.random() > 0.5)
+				{
+					roomLevelName = AssetPaths.level3__png;
+					roomLevelNumber = 3;
+					roomType.text = "Difficulty: Hard";
+				}
+				else
+				{
+					roomLevelName = AssetPaths.level2__png;
+					roomLevelNumber = 2;
+					roomType.text = "Difficulty: Medium";
+				}
+			case 3:
+				{
+					roomLevelName = AssetPaths.level3__png;
+					roomLevelNumber = 3;
+					roomType.text = "Difficulty: Hard";
+				}
+		}
+		add(roomType);
 	}
 
 	function choosePowerUpGraphic()

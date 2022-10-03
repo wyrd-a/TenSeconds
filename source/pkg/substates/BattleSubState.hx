@@ -27,7 +27,9 @@ import pkg.room.Room;
 **/
 class BattleSubState extends FlxSubState
 {
-	public var isPersistent:Bool = true;
+	public var isPersistent:Bool = false;
+
+	public var startNewRoom:Bool = false;
 
 	var player:Player;
 	var weapon:WeaponGroup;
@@ -48,7 +50,7 @@ class BattleSubState extends FlxSubState
 	override public function create()
 	{
 		this.player = new Player(500, 500);
-		this.room = new Room(AssetPaths.level2__png);
+		this.room = new Room(Config.roomLevelName);
 
 		// Room is added independently of obstacles
 		// within the room and the player, due to sort
@@ -83,6 +85,7 @@ class BattleSubState extends FlxSubState
 		this.ui.updateUI(player);
 		bomb.countdown(player, enemy);
 		this.weapon.positioning(this.player, this.enemy);
+		swapLevel();
 	}
 
 	public function checkHitboxes()
@@ -105,5 +108,14 @@ class BattleSubState extends FlxSubState
 		enemyArray[3] = rat;
 		enemyNum = Math.floor(enemyArray.length * Math.random());
 		this.enemy = this.enemyArray[enemyNum];
+	}
+
+	function swapLevel()
+	{
+		if (bomb.startNewRoom)
+		{
+			startNewRoom = true;
+			trace("New Room - Battle");
+		}
 	}
 }

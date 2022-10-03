@@ -40,12 +40,13 @@ class PlayState extends FlxState
 	{
 		this.handleInput();
 		this.returnToDefaultState();
+		swapLevel();
 		super.update(elapsed);
 	}
 
 	private function handleInput()
 	{
-		if (FlxG.keys.anyJustPressed(["SPACE"]))
+		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			if (this.subState != this.pauseSubState)
 			{
@@ -68,4 +69,15 @@ class PlayState extends FlxState
 			this.openSubState(this.battleSubState);
 		}
 	}
+
+	function swapLevel()
+	{
+		if (battleSubState.startNewRoom)
+		{
+			battleSubState.close();
+			openSubState(battleSubState = new BattleSubState());
+		}
+	}
+
+	function chooseMusic() {}
 }
