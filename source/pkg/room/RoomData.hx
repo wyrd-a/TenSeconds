@@ -20,6 +20,7 @@ class RoomData extends FlxSpriteGroup
 
 	var randPower:Int;
 	var randLevel:Int;
+	var advancingDifficulty:Float = 0.5;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -52,7 +53,7 @@ class RoomData extends FlxSpriteGroup
 		switch (Config.roomLevel)
 		{
 			case 1: // if current room is level 1
-				if (Math.random() > 0.5)
+				if (Math.random() > advancingDifficulty)
 				{
 					roomLevelName = AssetPaths.level2__png;
 					roomLevelNumber = 2;
@@ -65,7 +66,7 @@ class RoomData extends FlxSpriteGroup
 					roomType.text = "Difficulty: Easy";
 				}
 			case 2:
-				if (Math.random() > 0.5)
+				if (Math.random() > advancingDifficulty)
 				{
 					roomLevelName = AssetPaths.level3__png;
 					roomLevelNumber = 3;
@@ -79,9 +80,18 @@ class RoomData extends FlxSpriteGroup
 				}
 			case 3:
 				{
-					roomLevelName = AssetPaths.level3__png;
-					roomLevelNumber = 3;
-					roomType.text = "Difficulty: Hard";
+					if (Math.random() > advancingDifficulty)
+					{
+						roomLevelName = AssetPaths.boss_room__png;
+						roomLevelNumber = 4;
+						roomType.text = "Difficulty: BOSS";
+					}
+					else
+					{
+						roomLevelName = AssetPaths.level3__png;
+						roomLevelNumber = 3;
+						roomType.text = "Difficulty: Hard";
+					}
 				}
 		}
 		add(roomType);

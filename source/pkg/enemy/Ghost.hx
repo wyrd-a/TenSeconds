@@ -20,11 +20,11 @@ class Ghost extends Enemy
 		// Ghost specific stuff
 		tooCloseDist = 0;
 		attackCD = 1;
-		chargeCD = 1;
+		chargeCD = 0.5;
 		iframeCD = 2;
 		maxSpeed = 120;
 		health = 6;
-		aggroRange = 100;
+		aggroRange = 75;
 
 		oldHealth = health; // for tracking i-frames
 
@@ -53,6 +53,7 @@ class Ghost extends Enemy
 	/**The ghost gets bigger. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
+		immovable = false;
 		chargeTimer = 0;
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{

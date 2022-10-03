@@ -37,7 +37,7 @@ class Enemy extends FlxSprite
 	// Variables meant to be changed for different enemies
 	var tooCloseDist:Int;
 	var attackCD:Int;
-	var chargeCD:Int;
+	var chargeCD:Float;
 	var iframeCD:Int;
 	var maxSpeed:Float;
 	var aggroRange:Int;

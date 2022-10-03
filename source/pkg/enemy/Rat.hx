@@ -55,6 +55,7 @@ class Rat extends Enemy
 	/**The bat has a unique charge attack. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
+		immovable = false;
 		chargeTimer = 0;
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{

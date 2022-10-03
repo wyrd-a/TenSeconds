@@ -107,7 +107,7 @@ class Room extends FlxSpriteGroup
 		for (index => obstacle in this.obstacles)
 		{
 			obstacle.immovable = true;
-			this.obstacleSortGroup.add(obstacle);
+			// this.obstacleSortGroup.add(obstacle); // Add obstacles to room
 		}
 
 		for (index => sprite in spritesToSortWithObstacles)

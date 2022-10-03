@@ -60,6 +60,7 @@ class Scarecrow extends Enemy
 	/**The scarecrow spins and follows the player. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
+		immovable = false;
 		chargeTimer = 0;
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{

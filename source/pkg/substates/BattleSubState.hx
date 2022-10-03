@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import haxe.macro.Type.AbstractType;
 import pkg.config.Config;
@@ -30,6 +31,7 @@ class BattleSubState extends FlxSubState
 	public var isPersistent:Bool = false;
 
 	public var startNewRoom:Bool = false;
+	public var playerWon:Int = 0;
 
 	var player:Player;
 	var weapon:WeaponGroup;
@@ -46,6 +48,8 @@ class BattleSubState extends FlxSubState
 	var enemyNum:Int;
 	var enemy:Dynamic;
 	var obstacleSortGroup:FlxSpriteGroup;
+
+	var fadeToBlack:FlxSprite;
 
 	override public function create()
 	{
@@ -72,26 +76,47 @@ class BattleSubState extends FlxSubState
 		this.weapon = new WeaponGroup();
 		add(this.weapon);
 
-		this.ui = new UI(20, FlxG.height - 22);
+		this.ui = new UI(20, 20);
 		add(this.ui);
+
+		fadeToBlack = new FlxSprite(0, 0);
+		fadeToBlack.makeGraphic(1000, 1000, FlxColor.BLACK);
+		fadeToBlack.alpha = 0;
+		add(fadeToBlack);
+
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
-		this.checkHitboxes();
-		this.enemy.aiWorkings(this.player);
-		this.ui.updateUI(player);
-		bomb.countdown(player, enemy);
-		this.weapon.positioning(this.player, this.enemy);
-		swapLevel();
+		if (!bomb.startNewRoom)
+		{
+			super.update(elapsed);
+			this.checkHitboxes();
+			this.enemy.aiWorkings(this.player);
+			this.ui.updateUI(player);
+			bomb.countdown(player, enemy);
+			this.weapon.positioning(this.player, this.enemy);
+			swapLevel();
+		}
+		else
+		{
+			fadeToBlack.alpha += 0.05;
+			if (fadeToBlack.alpha > 0.9)
+			{
+				startNewRoom = true;
+				if (bomb.playerWon == -1)
+					playerWon = -1;
+				else if (bomb.playerWon == 1)
+					playerWon = 1;
+			}
+		}
 	}
 
 	public function checkHitboxes()
 	{
 		this.room.checkWallHitboxes([this.player, this.enemy]);
-		this.room.checkObstacles();
+		// this.room.checkObstacles();
 	}
 
 	/**Initiates a bunch of enemies and then chooses one to add to the game. Probably inefficient but its 2:27 am**/
@@ -114,7 +139,6 @@ class BattleSubState extends FlxSubState
 	{
 		if (bomb.startNewRoom)
 		{
-			startNewRoom = true;
 			trace("New Room - Battle");
 		}
 	}

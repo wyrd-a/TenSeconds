@@ -13,7 +13,7 @@ class UI extends FlxSpriteGroup
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super();
-		healthBar = new FlxSprite(x, y).makeGraphic(100, 20, FlxColor.GREEN);
+		healthBar = new FlxSprite(x, y).makeGraphic(100, 20, 0xd13131);
 		add(healthBar);
 		healthText = new FlxText(x, y + 6);
 		add(healthText);
