@@ -45,6 +45,10 @@ class Scarecrow extends Enemy
 	public function aiWorkings(player:FlxSprite)
 	{
 		this.trackPlayer(player);
+		if (isCharging)
+		{
+			animation.play("charging");
+		}
 		if (isAttacking)
 		{
 			attack(player);
@@ -80,5 +84,6 @@ class Scarecrow extends Enemy
 	{
 		animation.add("right", [for (i in(0...18)) i], animRate, true, false, false);
 		animation.add("left", [for (i in(0...18)) i], animRate, true, true, false);
+		animation.add("charging", [1]);
 	}
 }

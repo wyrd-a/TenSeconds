@@ -40,9 +40,9 @@ class BattleSubState extends FlxSubState
 		this.player = new Player(200, 200);
 		add(this.player);
 		enemy = new Scarecrow(400, 400);
-		add(this.enemy);
+		// add(this.enemy);
 		this.weapon = new Weapon();
-		// add(this.weapon);
+		add(this.weapon);
 		this.ui = new UI(20, FlxG.height - 22);
 		add(this.ui);
 
@@ -56,7 +56,7 @@ class BattleSubState extends FlxSubState
 		this.checkHitboxes();
 		this.enemy.aiWorkings(this.player);
 		this.weapon.move(this.player, this.enemy);
-		this.ui.updateUI(player);
+		this.ui.updateUI(player, weapon);
 		super.update(elapsed);
 	}
 

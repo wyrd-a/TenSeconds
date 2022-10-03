@@ -160,6 +160,7 @@ class Player extends FlxSprite
 	function immunity()
 	{
 		health = oldHealth;
+		currentHealth = health;
 		if (iframeCounter == 0)
 		{
 			iframeCounter = Timer.stamp();

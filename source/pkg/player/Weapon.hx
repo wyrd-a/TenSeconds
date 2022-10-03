@@ -21,8 +21,9 @@ class Weapon extends FlxSprite
 		loadGraphic(AssetPaths.weapon__png, true, 9, 27);
 		animation.add("uncharged", [2], 60, true, false, true);
 		animation.add("charged", [1], 60, true, false, true);
-		setGraphicSize(27, 0);
+		setGraphicSize(Std.int(3 * this.width), 0);
 		updateHitbox();
+
 		angularDrag = 400;
 	}
 
