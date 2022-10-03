@@ -4,11 +4,13 @@ import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
+import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxSort;
 import pkg.enemy.Enemy;
 import pkg.player.Player;
 import pkg.player.UI;
 import pkg.player.Weapon;
+import pkg.room.Obstacle;
 import pkg.room.Room;
 
 /**
@@ -24,22 +26,24 @@ class BattleSubState extends FlxSubState
 	var weapon:Weapon;
 	var ui:UI;
 	var room:Room;
+	var obstacleSortGroup:FlxSpriteGroup;
 
 	override public function create()
 	{
+		this.player = new Player(500, 500);
 		this.room = new Room();
+
+		// Room is added independently of obstacles
+		// within the room and the player, due to sort
+		// group
 		add(this.room);
 
-		// Things with logic tied to them
-		this.player = new Player(500, 500);
-		add(this.player);
-
 		this.enemy = new Enemy(400, 400);
-		add(this.enemy);
-		this.weapon = new Weapon();
-		add(this.weapon);
-		this.ui = new UI(20, FlxG.height - 22);
-		add(this.ui);
+		// add(this.weapon);
+		// this.ui = new UI(20, FlxG.height - 22);
+		// add(this.ui);
+
+		this.room.createRoomObstacles([this.player, this.enemy]);
 
 		super.create();
 	}
@@ -48,15 +52,15 @@ class BattleSubState extends FlxSubState
 	{
 		this.checkHitboxes();
 		this.enemy.trackPlayer(player);
-		this.weapon.move(player, enemy);
-		this.ui.updateUI(player);
+		// this.weapon.move(player, enemy);
+		// this.ui.updateUI(player);
 
 		super.update(elapsed);
-		trace("Updated in battle state");
 	}
 
 	public function checkHitboxes()
 	{
 		this.room.checkWallHitboxes([player, enemy]);
+		this.room.checkObstacles();
 	}
 }
