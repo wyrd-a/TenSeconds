@@ -20,7 +20,7 @@ class RoomData extends FlxSpriteGroup
 
 	var randPower:Int;
 	var randLevel:Int;
-	var advancingDifficulty:Float = 0.5;
+	var advancingDifficulty:Float = 0.7;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -46,7 +46,7 @@ class RoomData extends FlxSpriteGroup
 		powerUpText = new FlxText(x, y + 16, 0, "Flavor");
 		powerUpText.color = FlxColor.BLACK;
 		powerUpText.text = "Flavor: " + powerUpName;
-		add(powerUpText);
+		// add(powerUpText);
 
 		roomType = new FlxText(x, y);
 		roomType.color = FlxColor.BLACK;

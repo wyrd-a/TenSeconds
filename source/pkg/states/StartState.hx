@@ -32,6 +32,8 @@ class StartState extends FlxState
 	{
 		if (FlxG.mouse.pressed)
 		{
+			Config.roomLevel = 1;
+			Config.roomLevelName = AssetPaths.level1__png;
 			FlxG.switchState(new PlayState());
 		}
 		super.update(elapsed);

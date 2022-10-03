@@ -132,9 +132,9 @@ class BattleSubState extends FlxSubState
 		scarecrow = new Scarecrow(400, 400);
 		rat = new Rat(400, 400);
 		boss = new Boss(400, 400);
-		enemyArray[0] = scarecrow;
+		enemyArray[0] = bat;
 		enemyArray[1] = ghost;
-		enemyArray[2] = bat;
+		enemyArray[2] = scarecrow;
 		enemyArray[3] = boss;
 		enemyNum = Math.floor(enemyArray.length * Math.random());
 		this.enemy = this.enemyArray[Config.roomLevel - 1];

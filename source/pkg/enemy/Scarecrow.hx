@@ -28,7 +28,7 @@ class Scarecrow extends Enemy
 		health = 3;
 		aggroRange = 100;
 		animRate = 25;
-		maxHealth = 3;
+		maxHealth = 8;
 		name = "Scarecrow";
 
 		oldHealth = health; // for tracking i-frames
