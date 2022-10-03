@@ -3,19 +3,30 @@ package pkg.room;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
+import flixel.util.FlxSort;
 import haxe.Timer;
+import haxe.macro.Context;
+import haxe.macro.Expr;
 import pkg.config.Config;
+import pkg.enemy.Enemy;
 import pkg.player.Player;
+import pkg.room.Obstacle;
 
 class Room extends FlxSpriteGroup
 {
+	public var zLevel:Int = 0;
+
 	private var player:Player;
 	private var roomLevel:Int;
 	private var roomBg:FlxSprite;
 
+	public var obstacles:Array<Obstacle>;
+	public var nonObstacles:Array<FlxSprite>;
 	public var wallBounds:Array<FlxSprite>;
+	public var obstacleSortGroup:FlxSpriteGroup;
 
 	public function new(?background:String)
 	{
@@ -83,7 +94,44 @@ class Room extends FlxSpriteGroup
 		}
 	}
 
-	private function addObjectsToRooms() {}
+	public function createRoomObstacles(spritesToSortWithObstacles:Array<FlxSprite>)
+	{
+		this.obstacleSortGroup = new FlxSpriteGroup();
+		this.obstacles = [
+			new Obstacle(200, 200, "whatever"),
+			new Obstacle(300, 300, "whatever"),
+			new Obstacle(400, 400, "whatever")
+		];
+		this.nonObstacles = spritesToSortWithObstacles;
+
+		for (index => obstacle in this.obstacles)
+		{
+			obstacle.immovable = true;
+			this.obstacleSortGroup.add(obstacle);
+		}
+
+		for (index => sprite in spritesToSortWithObstacles)
+		{
+			this.obstacleSortGroup.add(sprite);
+		}
+
+		add(this.obstacleSortGroup);
+	}
+
+	public function checkObstacles()
+	{
+		this.obstacleSortGroup.sort(FlxSort.byY);
+
+		for (index => nonObstacle in this.nonObstacles)
+		{
+			for (index => obstacle in this.obstacles)
+			{
+				obstacle.height = obstacle.graphic.height * obstacle.hitBoxHeightProportion;
+				obstacle.offset.set(-obstacle.graphic.width, obstacle.graphic.height / 2);
+				FlxG.collide(obstacle, nonObstacle);
+			}
+		}
+	}
 
 	public function checkWallHitboxes(sprites:Array<FlxSprite>)
 	{
