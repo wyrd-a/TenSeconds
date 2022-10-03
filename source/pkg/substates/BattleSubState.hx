@@ -8,7 +8,9 @@ import flixel.text.FlxText;
 import flixel.util.FlxSort;
 import haxe.macro.Type.AbstractType;
 import pkg.enemy.Bat;
+import pkg.enemy.Bomb;
 import pkg.enemy.Ghost;
+import pkg.enemy.Rat;
 import pkg.enemy.Scarecrow;
 import pkg.player.Player;
 import pkg.player.UI;
@@ -29,11 +31,13 @@ class BattleSubState extends FlxSubState
 	var room:Room;
 	var ui:UI;
 	var healthText:FlxText;
+	var bomb:Bomb;
 
 	// I'm sorry, wyrd-a
 	var ghost:Ghost;
 	var bat:Bat;
 	var scarecrow:Scarecrow;
+	var rat:Rat;
 	var enemyArray:Array<Dynamic>;
 	var enemyNum:Int;
 	var enemy:Dynamic;
@@ -50,6 +54,9 @@ class BattleSubState extends FlxSubState
 		// Once again, I apologize
 		enemyCreation();
 
+		bomb = new Bomb(-50, -50);
+		add(bomb);
+
 		this.weapon = new WeaponGroup();
 		add(this.weapon);
 		this.ui = new UI(20, FlxG.height - 22);
@@ -65,6 +72,7 @@ class BattleSubState extends FlxSubState
 		this.checkHitboxes();
 		this.enemy.aiWorkings(this.player);
 		this.ui.updateUI(player);
+		bomb.countdown(player, enemy);
 		super.update(elapsed);
 		this.weapon.positioning(this.player, this.enemy);
 	}
@@ -81,11 +89,13 @@ class BattleSubState extends FlxSubState
 		bat = new Bat(400, 400);
 		ghost = new Ghost(400, 400);
 		scarecrow = new Scarecrow(400, 400);
+		rat = new Rat(400, 400);
 		enemyArray[0] = bat;
 		enemyArray[1] = ghost;
 		enemyArray[2] = scarecrow;
-		enemyNum = Math.floor(3 * Math.random());
-		this.enemy = this.enemyArray[enemyNum];
+		enemyArray[3] = rat;
+		enemyNum = Math.floor(enemyArray.length * Math.random());
+		this.enemy = this.enemyArray[3];
 		add(this.enemy);
 	}
 }

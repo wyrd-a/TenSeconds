@@ -17,10 +17,10 @@ class Room extends FlxSpriteGroup
 
 	public var wallBounds:Array<FlxSprite>;
 
-	public function new(?background:String)
+	public function new(?background:String, ?powerUp:String)
 	{
 		super();
-		this.setBackground();
+		this.setBackground(background);
 		this.createWalls();
 	}
 
