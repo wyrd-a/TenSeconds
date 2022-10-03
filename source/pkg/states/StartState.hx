@@ -17,12 +17,27 @@ class StartState extends FlxState
 
 	override public function create()
 	{
+		FlxG.mouse.load(AssetPaths.crosshair__png);
 		super.create();
 		var startBg = new FlxSprite(0, 0);
-		startBg.loadGraphic(AssetPaths.dumbcat1__jpg);
+		startBg.loadGraphic(AssetPaths.startScreen__png);
 
 		add(startBg);
-		this.createButtons();
+		startBg.scale.set(3, 3);
+		startBg.updateHitbox();
+		startBg.setPosition(0, 0);
+		// this.createButtons();
+	}
+
+	override public function update(elapsed:Float)
+	{
+		if (FlxG.mouse.pressed)
+		{
+			Config.roomLevel = 1;
+			Config.roomLevelName = AssetPaths.level1__png;
+			FlxG.switchState(new PlayState());
+		}
+		super.update(elapsed);
 	}
 
 	private function createButtons()

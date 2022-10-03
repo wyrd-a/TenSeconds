@@ -27,6 +27,8 @@ class Bat extends Enemy
 		maxSpeed = 60;
 		aggroRange = 100;
 		health = 5;
+		maxHealth = 5;
+		name = "Bat";
 
 		oldHealth = health; // for tracking i-frames
 

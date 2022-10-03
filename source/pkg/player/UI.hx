@@ -11,6 +11,11 @@ class UI extends FlxSpriteGroup
 	var healthBG:FlxSprite;
 	var healthText:FlxText;
 	var healthBar:FlxSprite;
+	var pName:FlxText;
+
+	var ehealthBar:FlxSprite;
+	var ehealthText:FlxText;
+	var eName:FlxText;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -21,11 +26,24 @@ class UI extends FlxSpriteGroup
 		healthBG.updateHitbox();
 		healthBG.setPosition(0, 0);
 		add(healthBG);
-		healthBar = new FlxSprite(x, y).makeGraphic(100, 20, FlxColor.RED);
+		healthBar = new FlxSprite(78, 534).makeGraphic(35 * 3, 21, FlxColor.RED);
 		add(healthBar);
-		healthText = new FlxText(x, y + 6);
+		healthText = new FlxText(healthBar.x + 6, healthBar.y + 6);
 		add(healthText);
 		healthText.text = "5 / 5";
+		pName = new FlxText(healthBar.x, healthBar.y - 20, 0, "Exorcist", 12);
+		pName.color = FlxColor.BLACK;
+		add(pName);
+
+		// enemy health
+		ehealthBar = new FlxSprite(681, 534).makeGraphic(35 * 3, 21, FlxColor.RED);
+		add(ehealthBar);
+		ehealthText = new FlxText(ehealthBar.x + 6, ehealthBar.y + 6);
+		add(ehealthText);
+		ehealthText.text = "5 / 5";
+		eName = new FlxText(ehealthBar.x, ehealthBar.y - 20, 0, "Enemy", 12);
+		eName.color = FlxColor.BLACK;
+		add(eName);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -35,11 +53,23 @@ class UI extends FlxSpriteGroup
 
 	public function updateUI(player:Player, enemy:Enemy)
 	{
+		eName.text = enemy.name;
 		if (player.health > 0)
 		{
-			healthBar.setGraphicSize(Std.int(20 * player.health), 20);
+			healthBar.setGraphicSize(Std.int((105 / 5 * player.health)), 21);
 			healthBar.updateHitbox();
 			healthText.text = player.health + " / " + player.maxHealth;
+		}
+		if (enemy.health > 0)
+		{
+			ehealthBar.setGraphicSize(Std.int((105 / enemy.maxHealth * enemy.health)), 21);
+			ehealthBar.updateHitbox();
+			ehealthText.text = enemy.health + " / " + enemy.maxHealth;
+		}
+		else
+		{
+			ehealthBar.kill();
+			ehealthText.text = "0 / " + enemy.maxHealth;
 		}
 	}
 }

@@ -13,27 +13,27 @@ import pkg.states.StartState;
 
 class WinSubState extends FlxSubState
 {
-	var winText:FlxText;
+	var winScreen:FlxSprite;
 	var returnBtn:FlxButton;
 
 	override public function create()
 	{
 		super.create();
-		winText = new FlxText(200, 200, 0, "You win!");
-		add(winText);
-
-		returnBtn = new FlxButton(300, 300, "Main Menu", onClick);
-		add(returnBtn);
+		winScreen = new FlxSprite(0, 0);
+		winScreen.loadGraphic(AssetPaths.winScreen__png);
+		winScreen.scale.set(3, 3);
+		winScreen.updateHitbox();
+		winScreen.setPosition(0, 0);
+		add(winScreen);
 	}
 
 	override public function update(elapsed:Float)
 	{
+		if (FlxG.mouse.pressed)
+		{
+			FlxG.switchState(new StartState());
+		}
 		super.update(elapsed);
 		_parentState.update(elapsed);
-	}
-
-	function onClick()
-	{
-		FlxG.switchState(new StartState());
 	}
 }
