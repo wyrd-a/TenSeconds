@@ -28,10 +28,10 @@ class Room extends FlxSpriteGroup
 	public var wallBounds:Array<FlxSprite>;
 	public var obstacleSortGroup:FlxSpriteGroup;
 
-	public function new(?background:String)
+	public function new(?background:String, ?powerUp:String)
 	{
 		super();
-		this.setBackground();
+		this.setBackground(background);
 		this.createWalls();
 	}
 
@@ -39,7 +39,7 @@ class Room extends FlxSpriteGroup
 	{
 		// Default room is level 1
 		var trueAssetPath:String;
-		if (assetPath == null)
+		if (assetPath != null)
 		{
 			trueAssetPath = assetPath;
 		}
@@ -48,7 +48,7 @@ class Room extends FlxSpriteGroup
 			trueAssetPath = AssetPaths.level1__png;
 		}
 
-		this.roomBg = new FlxSprite(AssetPaths.level1__png);
+		this.roomBg = new FlxSprite(trueAssetPath);
 		this.roomBg.setGraphicSize(Math.round(this.roomBg.width * 3), Math.round(this.roomBg.height * 3));
 		this.roomBg.setPosition(288, 192); // default width, height of level
 		add(this.roomBg);
@@ -107,7 +107,7 @@ class Room extends FlxSpriteGroup
 		for (index => obstacle in this.obstacles)
 		{
 			obstacle.immovable = true;
-			this.obstacleSortGroup.add(obstacle);
+			// this.obstacleSortGroup.add(obstacle); // Add obstacles to room
 		}
 
 		for (index => sprite in spritesToSortWithObstacles)
@@ -139,8 +139,8 @@ class Room extends FlxSpriteGroup
 		{
 			for (index => collidingSprite in sprites)
 			{
-				FlxG.collide(bound, collidingSprite);
 				bound.updateHitbox();
+				FlxG.collide(bound, collidingSprite);
 			}
 		}
 	}

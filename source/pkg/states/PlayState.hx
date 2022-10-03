@@ -3,10 +3,13 @@ package pkg.states;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxSubState;
+import flixel.input.FlxAccelerometer;
+import pkg.config.Config;
 import pkg.substates.BattleSubState;
+import pkg.substates.LoseSubState;
 import pkg.substates.PauseSubState;
-import pkg.substates.RewardSubState;
 import pkg.substates.SelectSubState;
+import pkg.substates.WinSubState;
 
 /**
 	Main playstate, includes logic for switching between 
@@ -18,13 +21,17 @@ class PlayState extends FlxState
 	private var prevSubState:FlxSubState;
 	private var battleSubState:BattleSubState;
 	private var pauseSubState:PauseSubState;
-	private var rewardSubState:RewardSubState;
+	private var loseSubState:LoseSubState;
+	private var winSubState:WinSubState;
 	private var selectSubState:SelectSubState;
 	private var allSubstates:Array<FlxSubState>;
+
+	var songTracker:Int = 0;
 
 	override public function create()
 	{
 		super.create();
+		chooseMusic();
 		// By default, just go to battle substate
 		this.persistentDraw = true;
 		this.persistentUpdate = true;
@@ -32,6 +39,8 @@ class PlayState extends FlxState
 
 		this.battleSubState = new BattleSubState();
 		this.pauseSubState = new PauseSubState();
+		loseSubState = new LoseSubState();
+		winSubState = new WinSubState();
 
 		openSubState(this.battleSubState);
 	}
@@ -40,12 +49,14 @@ class PlayState extends FlxState
 	{
 		this.handleInput();
 		this.returnToDefaultState();
+		swapLevel();
+
 		super.update(elapsed);
 	}
 
 	private function handleInput()
 	{
-		if (FlxG.keys.anyJustPressed(["SPACE"]))
+		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			if (this.subState != this.pauseSubState)
 			{
@@ -66,6 +77,63 @@ class PlayState extends FlxState
 		if (this.subState == null)
 		{
 			this.openSubState(this.battleSubState);
+		}
+	}
+
+	function swapLevel()
+	{
+		if (battleSubState.startNewRoom)
+		{
+			FlxG.sound.destroy();
+			if (battleSubState.playerWon == 1)
+			{
+				battleSubState.close();
+				openSubState(winSubState);
+			}
+			else if (battleSubState.playerWon == -1)
+			{
+				battleSubState.close();
+				openSubState(loseSubState);
+			}
+			else
+			{
+				battleSubState.close();
+				openSubState(battleSubState = new BattleSubState());
+				chooseMusic();
+			}
+		}
+	}
+
+	function chooseMusic()
+	{
+		trace(Config.roomLevel);
+		switch (Config.roomLevel)
+		{
+			case 1:
+				if (songTracker != 1)
+				{
+					FlxG.sound.playMusic(AssetPaths.Klockvinde__ogg);
+					songTracker = 1;
+				}
+			case 2:
+				if (songTracker != 2)
+				{
+					FlxG.sound.playMusic(AssetPaths.Wandering_Beast_Loop__ogg);
+					songTracker = 2;
+				}
+			case 3:
+				if (songTracker != 3)
+				{
+					FlxG.sound.playMusic(AssetPaths.Mechanical_Monstrosity_Loop__ogg);
+
+					songTracker = 3;
+				}
+			case 4:
+				if (songTracker != 4)
+				{
+					FlxG.sound.playMusic(AssetPaths.Overclocking__ogg);
+					songTracker = 4;
+				}
 		}
 	}
 }
