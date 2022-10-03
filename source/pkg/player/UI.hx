@@ -11,6 +11,7 @@ class UI extends FlxSpriteGroup
 	var healthBG:FlxSprite;
 	var healthText:FlxText;
 	var healthBar:FlxSprite;
+	var pName:FlxText;
 
 	var ehealthBar:FlxSprite;
 	var ehealthText:FlxText;
@@ -30,6 +31,9 @@ class UI extends FlxSpriteGroup
 		healthText = new FlxText(healthBar.x + 6, healthBar.y + 6);
 		add(healthText);
 		healthText.text = "5 / 5";
+		pName = new FlxText(healthBar.x, healthBar.y - 20, 0, "Exorcist", 12);
+		pName.color = FlxColor.BLACK;
+		add(pName);
 
 		// enemy health
 		ehealthBar = new FlxSprite(681, 534).makeGraphic(35 * 3, 21, FlxColor.RED);

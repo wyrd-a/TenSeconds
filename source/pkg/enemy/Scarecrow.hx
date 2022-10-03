@@ -25,7 +25,7 @@ class Scarecrow extends Enemy
 		chargeCD = 1;
 		iframeCD = 2;
 		maxSpeed = 80;
-		health = 3;
+		health = 8;
 		aggroRange = 100;
 		animRate = 25;
 		maxHealth = 8;
