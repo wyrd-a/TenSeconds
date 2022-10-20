@@ -12,10 +12,11 @@ import haxe.Timer;
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = 6;
+	var VEL:Float = 6; // How fast the weapon chases after the mouse
+
+	public var CHARGE:Float = 400; // Speed weapon needs to reach before powering up
 
 	public var DIST:Float = 75;
-	public var CHARGE:Float = 400;
 	public var targetAngle:Float;
 
 	public var spunUp:Bool = false;
@@ -46,13 +47,9 @@ class Weapon extends FlxSprite
 		// targetAngle = angleControl(player);
 		targetAngle = FlxAngle.angleBetweenMouse(player, true) - 90;
 
-		if (!spunUp)
-		{ // choose angular speed
-			if (targetAngle == 69420)
-			{
-				angularAcceleration = 0;
-			}
-			else if (angle > targetAngle)
+		if (!spunUp) // choose angular speed DOES NOT WORK IN SECOND QUADRANT???
+		{
+			if (angle > targetAngle)
 			{
 				if (angle > targetAngle + 180)
 				{
@@ -109,13 +106,13 @@ class Weapon extends FlxSprite
 		y = (DIST * Math.cos(angle / 180 * Math.PI)) + player.y + (player.height / 2) - (height / 2);
 
 		// Keep angle between -180 and 180
-		if (angle < -180)
+		if (angle < -270)
 		{
-			angle = 180;
+			angle = 90;
 		}
-		if (angle > 180)
+		if (angle > 90)
 		{
-			angle = -180;
+			angle = -270;
 		}
 
 		// Weapon charge animation

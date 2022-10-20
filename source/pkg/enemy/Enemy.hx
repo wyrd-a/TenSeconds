@@ -1,17 +1,13 @@
 package pkg.enemy;
 
-import AssetPaths;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.input.gamepad.mappings.XInputMapping;
+import flixel.graphics.FlxGraphic;
+import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
-import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.tile.FlxTilemap.GraphicAuto;
-import flixel.util.FlxCollision;
+import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 import haxe.Timer;
-import haxe.macro.Type.AbstractType;
-import openfl.display.Graphics;
 import pkg.player.Player;
 
 /**
@@ -20,6 +16,8 @@ import pkg.player.Player;
 class Enemy extends FlxSprite
 {
 	public var isCharging:Bool = false;
+
+	public var fireProjectile:Bool = false;
 
 	var chargeTimer:Float = 0;
 
@@ -47,8 +45,17 @@ class Enemy extends FlxSprite
 	var maxSpeed:Float;
 	var aggroRange:Int;
 
+	// Projectile variables
+	public var projGraphic:String = AssetPaths.bomb__png;
+	public var projWidth:Int = 32;
+	public var projHeight:Int = 32;
+	public var projSpeed:Int = 200;
+	public var projFrames:Int = 1;
+
 	// immunity frames
 	var oldHealth:Float;
+
+	var hurtSound:FlxSound;
 
 	public var iframes:Bool = false;
 
@@ -63,6 +70,8 @@ class Enemy extends FlxSprite
 		makeGraphic(64, 64, FlxColor.GREEN);
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
+
+		hurtSound = FlxG.sound.load(AssetPaths.EnemyHurt2__wav);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -244,6 +253,7 @@ class Enemy extends FlxSprite
 	{
 		if (!iframes)
 		{
+			hurtSound.play();
 			iframes = true;
 			health -= 1;
 		}

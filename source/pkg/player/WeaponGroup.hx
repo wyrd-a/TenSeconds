@@ -3,6 +3,7 @@ package pkg.player;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import pkg.enemy.Enemy;
 
@@ -13,6 +14,9 @@ class WeaponGroup extends FlxSpriteGroup
 	var weaponBox:FlxSprite;
 	var wbDist:Float = 100;
 
+	var weaponAngle:FlxText;
+	var targetAngle:FlxText;
+
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super();
@@ -21,10 +25,17 @@ class WeaponGroup extends FlxSpriteGroup
 		weaponBox = new FlxSprite().makeGraphic(16, 16, FlxColor.WHITE);
 		add(weaponBox);
 		weaponBox.alpha = 0;
+
+		weaponAngle = new FlxText(0, 0);
+		targetAngle = new FlxText(0, 20);
+		add(weaponAngle);
+		add(targetAngle);
 	}
 
 	override public function update(elapsed:Float):Void
 	{
+		weaponAngle.text = "Weapon Angle: " + Std.string(weapon.angle);
+		targetAngle.text = "Target Angle: " + Std.string(weapon.targetAngle);
 		super.update(elapsed);
 	}
 

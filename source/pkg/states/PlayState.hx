@@ -31,7 +31,7 @@ class PlayState extends FlxState
 	override public function create()
 	{
 		super.create();
-		chooseMusic();
+		// chooseMusic();
 		// By default, just go to battle substate
 		this.persistentDraw = true;
 		this.persistentUpdate = true;

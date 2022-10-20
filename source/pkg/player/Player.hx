@@ -2,9 +2,9 @@ package pkg.player;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
+import flixel.system.FlxSound;
 import haxe.Timer;
+import pkg.config.Config;
 
 /**
 	This is the player. Movement functions and stats are handled here.
@@ -16,9 +16,15 @@ class Player extends FlxSprite
 	var left:Bool;
 	var right:Bool;
 	var VEL:Float = 200;
+	var screenShaker:Bool;
+	var screenTimer:Float = 0;
 
 	// immunity stuff
 	var oldHealth:Float;
+
+	// Player SFX
+	var hurtSound:FlxSound;
+	var stepSound:FlxSound;
 
 	public var iframes:Bool = false;
 
@@ -40,9 +46,22 @@ class Player extends FlxSprite
 		offset.set(0, 6);
 		setGraphicSize(72, 72);
 		createAnimations();
-		health = maxHealth; // sets player's health
+
+		// Set player health
+		if (Config.playerHealth == null)
+		{
+			health = maxHealth;
+		}
+		else
+		{
+			health = Config.playerHealth;
+		}
 		oldHealth = health; // for tracking i-frames
 		currentHealth = health;
+
+		// Sound loading
+		hurtSound = FlxG.sound.load(AssetPaths.PlayerHurt1__wav);
+		stepSound = FlxG.sound.load(AssetPaths.Step3__wav);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -115,6 +134,7 @@ class Player extends FlxSprite
 		if ((velocity.x != 0) || (velocity.y != 0))
 		{
 			playAnimation(animationNumber);
+			stepSound.play();
 		}
 		else
 		{
@@ -122,7 +142,8 @@ class Player extends FlxSprite
 		}
 	}
 
-	function boundToBorder() // replace with
+	/**Pacman-style borders. Shouldn't be implemented, for testing only**/
+	function boundToBorder()
 	{
 		if (x > FlxG.width)
 		{
@@ -157,6 +178,7 @@ class Player extends FlxSprite
 
 	function immunity()
 	{
+		screenShake();
 		if (iframeCounter == 0)
 		{
 			iframeCounter = Timer.stamp();
@@ -186,6 +208,7 @@ class Player extends FlxSprite
 	{
 		if (!iframes)
 		{
+			hurtSound.play(true);
 			iframes = true;
 			health -= 1;
 		}
@@ -258,6 +281,29 @@ class Player extends FlxSprite
 				animation.play("Lidle");
 			case 8:
 				animation.play("DLidle");
+		}
+	}
+
+	function screenShake()
+	{
+		if (Timer.stamp() - iframeCounter < 0.2)
+		{
+			if (screenTimer == 0)
+			{
+				screenTimer = Timer.stamp();
+				screenShaker = false;
+			}
+			if ((Timer.stamp() - screenTimer > 0.05) && !screenShaker)
+			{
+				FlxG.camera.x += 5;
+				screenShaker = true;
+			}
+			if (Timer.stamp() - screenTimer > 0.1)
+			{
+				FlxG.camera.x -= 5;
+				screenShaker = false;
+				screenTimer = 0;
+			}
 		}
 	}
 }

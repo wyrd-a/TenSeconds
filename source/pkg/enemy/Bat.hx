@@ -48,6 +48,7 @@ class Bat extends Enemy
 	public function aiWorkings(player:FlxSprite)
 	{
 		this.trackPlayer(player);
+		fireProjectile = false;
 		if (isAttacking)
 		{
 			attack(player);
@@ -74,6 +75,7 @@ class Bat extends Enemy
 			attackTimer = 0;
 			// Restore sprite to initial configuration here
 			velocity.set(0, 0);
+			fireProjectile = true;
 		}
 	}
 

@@ -39,13 +39,14 @@ class Room extends FlxSpriteGroup
 	{
 		// Default room is level 1
 		var trueAssetPath:String;
+		assetPath = Config.roomLevelName;
 		if (assetPath != null)
 		{
 			trueAssetPath = assetPath;
 		}
 		else
 		{
-			trueAssetPath = AssetPaths.level1__png;
+			trueAssetPath = AssetPaths.boss_room__png;
 		}
 
 		this.roomBg = new FlxSprite(trueAssetPath);

@@ -20,7 +20,7 @@ class RoomData extends FlxSpriteGroup
 
 	var randPower:Int;
 	var randLevel:Int;
-	var advancingDifficulty:Float = 0.7;
+	var advancingDifficulty:Float = 0.5; // How hard it is to change rooms
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -40,7 +40,7 @@ class RoomData extends FlxSpriteGroup
 		powerUp = new FlxSprite(x, y);
 		powerUp.loadGraphic(AssetPaths.items__png, true, 27, 14);
 		choosePowerUpGraphic();
-		powerUp.animation.play(powerUpName);
+		// powerUp.animation.play(powerUpName);
 		// add(powerUp);
 
 		powerUpText = new FlxText(x, y + 16, 0, "Flavor");

@@ -12,6 +12,7 @@ class UI extends FlxSpriteGroup
 	var healthText:FlxText;
 	var healthBar:FlxSprite;
 	var pName:FlxText;
+	var hearts:Array<FlxSprite>;
 
 	var ehealthBar:FlxSprite;
 	var ehealthText:FlxText;
@@ -44,6 +45,10 @@ class UI extends FlxSpriteGroup
 		eName = new FlxText(ehealthBar.x, ehealthBar.y - 20, 0, "Enemy", 12);
 		eName.color = FlxColor.BLACK;
 		add(eName);
+
+		// Adding hearts to the game
+		hearts = new Array<FlxSprite>();
+		// for (i in(0...))
 	}
 
 	override public function update(elapsed:Float):Void

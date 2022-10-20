@@ -14,8 +14,10 @@ import pkg.enemy.Bat;
 import pkg.enemy.Bomb;
 import pkg.enemy.Boss;
 import pkg.enemy.Ghost;
+import pkg.enemy.Projectile;
 import pkg.enemy.Rat;
 import pkg.enemy.Scarecrow;
+import pkg.enemy.Turret;
 import pkg.player.Player;
 import pkg.player.UI;
 import pkg.player.Weapon;
@@ -46,10 +48,13 @@ class BattleSubState extends FlxSubState
 	var scarecrow:Scarecrow;
 	var rat:Rat;
 	var boss:Boss;
+	var turret:Turret;
 	var enemyArray:Array<Dynamic>;
 	var enemyNum:Int;
 	var enemy:Dynamic;
 	var obstacleSortGroup:FlxSpriteGroup;
+
+	var projectile:Projectile;
 
 	var fadeToBlack:FlxSprite;
 
@@ -77,6 +82,9 @@ class BattleSubState extends FlxSubState
 		add(player);
 		add(enemy);
 
+		this.projectile = new Projectile(0, 0, enemy.projGraphic, enemy.projWidth, enemy.projHeight, enemy.projSpeed, enemy.projFrames);
+		add(projectile);
+
 		this.weapon = new WeaponGroup();
 		add(this.weapon);
 
@@ -101,6 +109,7 @@ class BattleSubState extends FlxSubState
 			this.ui.updateUI(player, enemy);
 			bomb.countdown(player, enemy);
 			this.weapon.positioning(this.player, this.enemy);
+			this.projectile.spawnProjectile(player, enemy);
 			swapLevel();
 		}
 		else
@@ -132,7 +141,8 @@ class BattleSubState extends FlxSubState
 		scarecrow = new Scarecrow(400, 400);
 		rat = new Rat(400, 400);
 		boss = new Boss(400, 400);
-		enemyArray[0] = bat;
+		turret = new Turret(400, 400);
+		enemyArray[0] = turret;
 		enemyArray[1] = ghost;
 		enemyArray[2] = scarecrow;
 		enemyArray[3] = boss;

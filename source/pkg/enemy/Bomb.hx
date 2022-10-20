@@ -9,18 +9,14 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import haxe.Timer;
 import pkg.config.Config;
-import pkg.player.Player;
 import pkg.room.RoomData;
 
-/**This is the bomb that drops upon enemy death and the room selection for some reason**/
+/**The bomb isn't used in the NG build so idk why its called bomb, but this handles death and the room selection for some reason**/
 class Bomb extends FlxSpriteGroup
 {
 	var bombBody:FlxSprite;
 	var bombTimer:Float = 0;
 	var bombText:FlxText;
-
-	var bombSFX:FlxSound;
-	var bellSFX:FlxSound;
 
 	var roomSelectOverlay:FlxSprite;
 	var upRoom:RoomData;
@@ -35,6 +31,9 @@ class Bomb extends FlxSpriteGroup
 	var topBord:FlxSprite;
 	var bottomBord:FlxSprite;
 
+	var levelBarrierNames:Array<String>;
+	var levelBarrierNums:Array<Int>;
+
 	public var startNewRoom:Bool = false;
 	public var playerWon:Int = 0;
 
@@ -45,10 +44,10 @@ class Bomb extends FlxSpriteGroup
 		bombBody = new FlxSprite(x, y);
 		bombBody.loadGraphic(AssetPaths.bomb__png);
 		bombBody.scale.set(3, 3);
-		add(bombBody);
+		// add(bombBody);
 		bombText = new FlxText(x + 20, y + 20, 0, "10", 20);
 		bombText.color = FlxColor.RED;
-		add(bombText);
+		// add(bombText);
 
 		roomSelectOverlay = new FlxSprite(1000, 1000).loadGraphic(AssetPaths.roomSelectOverlay__png);
 		roomSelectOverlay.scale.set(3, 3);
@@ -64,13 +63,18 @@ class Bomb extends FlxSpriteGroup
 		leftRoom = new RoomData(x, y);
 		add(leftRoom);
 
+		levelBarrierNames = [
+			AssetPaths.level1_border__png,
+			AssetPaths.level2_border__png,
+			AssetPaths.level3_border__png,
+			AssetPaths.level3_border__png
+		];
+		levelBarrierNums = [11, 6, 11, 2];
+
 		roomBarriers = new FlxSprite(0, 0);
-		roomBarriers.loadGraphic(AssetPaths.barriers__png, true, 288, 192);
-		roomBarriers.animation.add("1", [0]);
-		roomBarriers.animation.add("2", [1]);
-		roomBarriers.animation.add("3", [2]);
-		roomBarriers.animation.add("4", [3]);
-		roomBarriers.animation.play(Std.string(Config.roomLevel));
+		roomBarriers.loadGraphic(levelBarrierNames[Config.roomLevel - 1], true, 288, 192);
+		roomBarriers.animation.add("1", [for (i in(0...levelBarrierNums[Config.roomLevel - 1])) i], 14, false);
+		roomBarriers.animation.play("1");
 		add(roomBarriers);
 		roomBarriers.scale.set(3, 3);
 		roomBarriers.updateHitbox();
@@ -103,9 +107,6 @@ class Bomb extends FlxSpriteGroup
 		bottomBord.alpha = 0;
 		add(bottomBord);
 		bottomBord.immovable = true;
-
-		bombSFX = FlxG.sound.load(AssetPaths.BombSFX__mp3, 1);
-		bellSFX = FlxG.sound.load(AssetPaths.Bell__wav, 1);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -123,12 +124,11 @@ class Bomb extends FlxSpriteGroup
 		}
 		if (!enemy.alive && (Config.roomLevel != 4)) // should be !enemy.alive
 		{
-			if (bombTimer == 0)
+			if (bombTimer == 0) // Keep this code
 			{
-				boundaryKill();
 				bombTimer = Timer.stamp();
-				x = enemy.x + enemy.origin.x;
-				y = enemy.y + enemy.origin.y;
+				// x = enemy.x + enemy.origin.x;
+				// y = enemy.y + enemy.origin.y;
 				bombText.setPosition(FlxG.width / 2, FlxG.height / 2);
 				// make room data appear here
 				roomSelectOverlay.setPosition(0, 0);
@@ -136,8 +136,14 @@ class Bomb extends FlxSpriteGroup
 				downRoom.setPosition(325, 520);
 				rightRoom.setPosition(750, 400);
 				leftRoom.setPosition(22 * 3 + 50, 60 * 3 + 50);
-				bombSFX.play(true);
+
+				roomBarriers.animation.add("2", [
+					for (i in(0...levelBarrierNums[Config.roomLevel - 1]))
+						levelBarrierNums[Config.roomLevel - 1] - 1 - i
+				], 14, false);
+				roomBarriers.animation.play("2");
 			}
+			boundaryKill();
 
 			// Room selection criteria
 			if (player.x > FlxG.width)
@@ -146,6 +152,7 @@ class Bomb extends FlxSpriteGroup
 				Config.roomLevel = rightRoom.roomLevelNumber;
 				startNewRoom = true;
 				trace("right");
+				Config.playerHealth = player.health;
 			}
 			else if (player.y > FlxG.height)
 			{
@@ -153,6 +160,7 @@ class Bomb extends FlxSpriteGroup
 				Config.roomLevel = downRoom.roomLevelNumber;
 				startNewRoom = true;
 				trace("down");
+				Config.playerHealth = player.health;
 			}
 			else if (player.x < 0)
 			{
@@ -160,6 +168,7 @@ class Bomb extends FlxSpriteGroup
 				Config.roomLevel = leftRoom.roomLevelNumber;
 				startNewRoom = true;
 				trace("left");
+				Config.playerHealth = player.health;
 			}
 			else if (player.y < 0)
 			{
@@ -167,14 +176,13 @@ class Bomb extends FlxSpriteGroup
 				Config.roomLevel = upRoom.roomLevelNumber;
 				startNewRoom = true;
 				trace("up");
+				Config.playerHealth = player.health;
 			}
 
-			if (Timer.stamp() - bombTimer > 10) // What happens if the timer runs out
+			if (Timer.stamp() - bombTimer > 9999) // What happens if the timer runs out
 			{
 				playerWon = -1;
 				player.kill();
-				bombSFX.play(false);
-				bellSFX.play(true);
 				startNewRoom = true;
 			}
 			else
@@ -199,10 +207,14 @@ class Bomb extends FlxSpriteGroup
 
 	function boundaryKill()
 	{
-		roomBarriers.kill();
-		leftBord.kill();
-		rightBord.kill();
-		topBord.kill();
-		bottomBord.kill();
+		if (roomBarriers.animation.finished && roomBarriers.alive)
+		{
+			roomBarriers.kill();
+			leftBord.kill();
+			rightBord.kill();
+			topBord.kill();
+			bottomBord.kill();
+			trace("killed barriers");
+		}
 	}
 }

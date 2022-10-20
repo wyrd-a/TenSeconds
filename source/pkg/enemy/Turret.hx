@@ -1,46 +1,42 @@
 package pkg.enemy;
 
 import AssetPaths;
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.group.FlxSpriteGroup;
-import flixel.math.FlxAngle;
 import haxe.Timer;
 
 /**
-	This is Hickertock. He has TWO attacks!
+	This is the Bat. It uses an AOE attack when it gets close.
 **/
-class Boss extends Enemy
+class Turret extends Enemy
 {
-	public var theta:Float; // Used for bat charge attack
+	var attackSpeed:Float = 150;
 
-	var attackSpeed:Float = 250;
+	// Projectile variables
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
 
-		// Boss specific stuff
+		// Turret specific stuff
 		tooCloseDist = 0;
-		attackCD = 2;
-		chargeCD = 2;
+		attackCD = 1;
+		chargeCD = 1;
 		iframeCD = 2;
-		maxSpeed = 100;
-		aggroRange = 200;
-		health = 10;
-		maxHealth = 10;
-		name = "Hickertock";
+		maxSpeed = 0;
+		aggroRange = 9001;
+		health = 1;
+		maxHealth = 5;
+		name = "Turret";
 
 		// Projectile variables
-		projGraphic = AssetPaths.bossBomb__png;
-		projWidth = 21;
-		projHeight = 21;
-		projSpeed = 0;
-		projFrames = 11;
+		projGraphic = AssetPaths.Boss__png;
+		projWidth = 39;
+		projHeight = 42;
+		projSpeed = 300;
 
 		oldHealth = health; // for tracking i-frames
 
-		loadGraphic(AssetPaths.Boss__png, true, 39, 42);
+		loadGraphic(AssetPaths.grandaddyStatue__png, false, 16, 38);
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
@@ -56,36 +52,24 @@ class Boss extends Enemy
 	public function aiWorkings(player:FlxSprite)
 	{
 		this.trackPlayer(player);
-		fireProjectile = false;
+		fireProjectile = false; // Needed for projectile enemies
 		if (isAttacking)
 		{
 			attack(player);
 		}
-		if (player.x > x)
-		{
-			animation.play("right");
-		}
-		else
-		{
-			animation.play("left");
-		}
 	}
 
-	/**The bat has a unique charge attack. This overrides the basic Enemy attack.**/
+	/**The turret has a shooting attack. This overrides the basic Enemy attack.**/
 	override function attack(player:FlxSprite)
 	{
-		// Rushdown Attack
 		immovable = false;
 		chargeTimer = 0;
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{
-			fireProjectile = true;
 			attackTimer = Timer.stamp();
 			// Change hitbox here
-			theta = FlxAngle.angleBetween(this, player);
 		}
 		// Longterm effects happen here
-		velocity.set(attackSpeed * Math.cos(theta), attackSpeed * Math.sin(theta));
 
 		if (Timer.stamp() - attackTimer > attackCD) // Retract hitbox after a certain amount of time has passed
 		{
@@ -93,17 +77,13 @@ class Boss extends Enemy
 			attackTimer = 0;
 			// Restore sprite to initial configuration here
 			velocity.set(0, 0);
+			fireProjectile = true;
 		}
 	}
 
 	function createAnimations()
 	{
-		animation.add("right", [for (i in(0...8)) i], animRate, true, true, false);
-		animation.add("left", [for (i in(0...8)) i], animRate, true, false, false);
-	}
-
-	function bombDrop()
-	{
-		fireProjectile = true;
+		animation.add("right", [for (i in(0...1)) i], animRate, true, true, false);
+		animation.add("left", [for (i in(0...1)) i], animRate, true, false, false);
 	}
 }
