@@ -15,8 +15,10 @@ class LoseSubState extends FlxSubState
 	{
 		super.create();
 		winScreen = new FlxSprite(0, 0);
-		winScreen.loadGraphic(AssetPaths.deathScreen__png);
+		winScreen.loadGraphic(AssetPaths.deathScreen__png, true, 288, 192);
 		winScreen.scale.set(3, 3);
+		winScreen.animation.add("loseloop", [0, 1, 2, 3], 10);
+		winScreen.animation.play("loseloop");
 		winScreen.updateHitbox();
 		winScreen.setPosition(0, 0);
 		add(winScreen);

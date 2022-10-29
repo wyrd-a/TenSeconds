@@ -54,10 +54,17 @@ class Powerups extends FlxSprite
 				Config.playerDamage += 1;
 			case "health":
 				{
-					Config.playerHealth += Config.playerMax;
+					if (Config.playerHealth < Config.playerMax)
+					{
+						if (Config.playerHealth + 3 < Config.playerMax)
+							Config.playerHealth += 3;
+						else
+							Config.playerHealth = Config.playerMax;
+					}
 				}
 			case "lifeup":
 				Config.playerMax += 1;
+				Config.playerHealth += 1;
 		}
 		kill();
 	}

@@ -18,7 +18,7 @@ class Obstacle extends FlxSprite
 	override public function new(x:Float = 0, y:Float = 0, type:String)
 	{
 		super(x, y);
-		loadGraphic(AssetPaths.grandaddyStatue__png);
+		loadGraphic(AssetPaths.bomb__png);
 		this.scale.set(3, 3);
 		this.updateHitbox();
 		this.hitBoxHeightProportion = .5;

@@ -40,6 +40,8 @@ class Turret extends Enemy
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
+		height = 96;
+		offset.y = 1;
 	}
 
 	override public function update(elapsed:Float):Void

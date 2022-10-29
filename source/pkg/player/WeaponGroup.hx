@@ -15,7 +15,7 @@ class WeaponGroup extends FlxSpriteGroup
 	var weaponBox:FlxSprite;
 	var wbDist:Float = 100;
 
-	var damageCounter:FlxText;
+	var damageCounter:FlxSprite;
 
 	var weaponAngle:FlxText;
 	var targetAngle:FlxText;
@@ -29,7 +29,11 @@ class WeaponGroup extends FlxSpriteGroup
 		add(weaponBox);
 		weaponBox.alpha = 0;
 
-		damageCounter = new FlxText(0, 0, 0, "1", 16);
+		damageCounter = new FlxSprite(0, 0);
+		damageCounter.loadGraphic(AssetPaths.dmgmarkerz__png, true, 16, 15);
+		damageCounter.scale.set(3, 3);
+		damageCounter.updateHitbox();
+
 		damageCounter.alpha = 0;
 		add(damageCounter);
 
@@ -74,10 +78,17 @@ class WeaponGroup extends FlxSpriteGroup
 		{
 			damageCounter.reset(weaponBox.x, weaponBox.y - 50);
 			damageCounter.alpha = 1;
-			damageCounter.text = Std.string(Config.playerDamage) + "!";
+			addAnimations();
+			damageCounter.animation.play(Std.string(Config.playerDamage - 1));
 			objA.takeDamage();
 			weapon.spunUp = false;
 			weapon.angularVelocity = -0.5 * weapon.angularVelocity;
 		}
+	}
+
+	function addAnimations()
+	{
+		for (i in 0...15)
+			damageCounter.animation.add(Std.string(i), [i]);
 	}
 }

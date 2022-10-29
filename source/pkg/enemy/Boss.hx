@@ -14,7 +14,7 @@ class Boss extends Enemy
 {
 	public var theta:Float; // Used for bat charge attack
 
-	var attackSpeed:Float = 250;
+	var attackSpeed:Float = 400;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{

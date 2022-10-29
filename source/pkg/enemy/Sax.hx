@@ -21,8 +21,8 @@ class Sax extends Enemy
 
 		// Bat specific stuff
 		tooCloseDist = 0;
-		attackCD = 2;
-		chargeCD = 2;
+		attackCD = 1;
+		chargeCD = 3;
 		iframeCD = 2;
 		maxSpeed = 0;
 		aggroRange = 9001;
@@ -39,11 +39,13 @@ class Sax extends Enemy
 
 		health = maxHealth; // for tracking i-frames
 
-		loadGraphic(AssetPaths.Gramophone__png, true, 32, 43); // Its a gramophone?
+		loadGraphic(AssetPaths.Gramophone__png, true, 32, 51); // Its a gramophone?
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
+		height = 96;
+		offset.y += 40;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -71,6 +73,9 @@ class Sax extends Enemy
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{
 			animFacing(player);
+			animation.add("attackL", [for (i in 7...24) i], animRate, false, false);
+			animation.add("attackR", [for (i in 7...24) i], animRate, false, true);
+			attackFacing(player);
 			attackTimer = Timer.stamp();
 			// Change hitbox here
 		}
@@ -83,6 +88,7 @@ class Sax extends Enemy
 			// Restore sprite to initial configuration here
 			velocity.set(0, 0);
 			fireProjectile = true;
+			animFacing(player);
 		}
 	}
 
@@ -90,5 +96,13 @@ class Sax extends Enemy
 	{
 		animation.add("right", [for (i in(0...6)) i], animRate, true, true, false);
 		animation.add("left", [for (i in(0...6)) i], animRate, true, false, false);
+	}
+
+	function attackFacing(player:FlxSprite)
+	{
+		if (player.x + (player.width / 2) > this.x + (this.width / 2))
+			animation.play("attackR");
+		else
+			animation.play("attackL");
 	}
 }

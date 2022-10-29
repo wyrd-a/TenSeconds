@@ -21,6 +21,8 @@ class UI extends FlxSpriteGroup
 
 	var tileGrid:FlxSprite;
 
+	var powerUpText:FlxSprite;
+
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super();
@@ -66,11 +68,19 @@ class UI extends FlxSpriteGroup
 			add(hearts[i]);
 			hearts[i].kill();
 		}
+		powerUpText = new FlxSprite(0.0);
+		powerUpText.loadGraphic(AssetPaths.pText__png, true, 62, 12);
+		powerUpText.scale.set(3, 3);
+		powerUpText.updateHitbox();
+		add(powerUpText);
+		powerUpText.alpha = 0;
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		if (powerUpText.alpha > 0)
+			powerUpText.alpha -= .01;
 	}
 
 	public function updateUI(player:Player, enemy:Enemy)
@@ -111,5 +121,18 @@ class UI extends FlxSpriteGroup
 				ehealthBar.kill();
 				ehealthText.text = "0 / " + enemy.maxHealth;
 		}*/
+	}
+
+	public function textUp(item:FlxSprite)
+	{
+		if (Config.roomLevel != 4)
+		{
+			powerUpText.alpha = 1;
+			powerUpText.animation.add("strong", [0]);
+			powerUpText.animation.add("health", [1]);
+			powerUpText.animation.add("lifeup", [2]);
+			powerUpText.animation.play(Config.roomFlavor);
+			powerUpText.setPosition(item.x - 30, item.y - 30);
+		}
 	}
 }

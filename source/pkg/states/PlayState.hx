@@ -3,6 +3,7 @@ package pkg.states;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxSubState;
+import flixel.FlxSubState;
 import flixel.input.FlxAccelerometer;
 import pkg.config.Config;
 import pkg.substates.BattleSubState;
@@ -39,7 +40,7 @@ class PlayState extends FlxState
 		this.destroySubStates = false;
 
 		this.battleSubState = new BattleSubState();
-		pauseSubState = new PauseSubState(0x32808080);
+		pauseSubState = new PauseSubState();
 		loseSubState = new LoseSubState();
 		winSubState = new WinSubState();
 
@@ -48,9 +49,10 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		this.handleInput();
-		this.returnToDefaultState();
+		// this.handleInput();
+		// this.returnToDefaultState();
 		swapLevel();
+		screenSize();
 
 		super.update(elapsed);
 	}
@@ -63,7 +65,8 @@ class PlayState extends FlxState
 			{
 				this.prevSubState = this.subState;
 				this.closeSubState();
-				this.openSubState(this.pauseSubState);
+				trace(pauseSubState.bgColor.alpha);
+				openSubState(pauseSubState);
 			}
 			else
 			{
@@ -119,13 +122,13 @@ class PlayState extends FlxState
 			case 2:
 				if (songTracker != 2)
 				{
-					FlxG.sound.playMusic(AssetPaths.Wandering_Beast_Loop__ogg);
+					FlxG.sound.playMusic(AssetPaths.Wandering_Beast_FINAL__ogg, 1);
 					songTracker = 2;
 				}
 			case 3:
 				if (songTracker != 3)
 				{
-					FlxG.sound.playMusic(AssetPaths.Mechanical_Monstrosity_Loop__ogg);
+					FlxG.sound.playMusic(AssetPaths.Mechanical_Monstrosity_FINAL__ogg, 1);
 
 					songTracker = 3;
 				}
@@ -135,6 +138,14 @@ class PlayState extends FlxState
 					FlxG.sound.playMusic(AssetPaths.Overclocking__ogg);
 					songTracker = 4;
 				}
+		}
+	}
+
+	function screenSize()
+	{
+		if (FlxG.keys.justPressed.F)
+		{
+			FlxG.fullscreen = !FlxG.fullscreen;
 		}
 	}
 }

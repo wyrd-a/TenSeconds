@@ -32,7 +32,7 @@ class Bat extends Enemy
 
 		oldHealth = health; // for tracking i-frames
 
-		loadGraphic(AssetPaths.bat__png, true, 25, 22);
+		loadGraphic(AssetPaths.bat__png, true, 25, 23);
 		createAnimations();
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);

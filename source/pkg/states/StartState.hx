@@ -7,6 +7,7 @@ import flixel.system.FlxAssets.FlxSoundAsset;
 import flixel.system.FlxSound;
 import flixel.ui.FlxButton;
 import pkg.config.Config;
+import pkg.substates.WinSubState;
 
 /**
 	Start screen
@@ -22,33 +23,27 @@ class StartState extends FlxState
 	{
 		super.create();
 		var startBg = new FlxSprite(0, 0);
-		startBg.loadGraphic(AssetPaths.splashScreen__png);
-
+		startBg.loadGraphic(AssetPaths.splashScreen__png, true, 864, 576);
+		startBg.animation.add("startloop", [0, 1, 2, 3], 10);
+		startBg.animation.play("startloop");
 		add(startBg);
-		startBg.scale.set(0.5, 0.5);
 		startBg.updateHitbox();
 		startBg.setPosition(0, 0);
 		// this.createButtons();
-		startMusic = new FlxSound();
-		startMusic = FlxG.sound.load(AssetPaths.Medly_of_Madness__ogg);
-		startMusic.play(false);
-		startMusic.resume();
 
-		if (startMusic.playing)
-		{
-			trace("playing music");
-		}
-		// FlxG.sound.playMusic(AssetPaths.Medly_of_Madness__mp3, 1, true);
+		FlxG.sound.playMusic(AssetPaths.Medly_of_Madness__ogg, 1, true);
 	}
 
 	override public function update(elapsed:Float)
 	{
+		screenSize();
 		super.update(elapsed);
-		if (FlxG.keys.pressed.SPACE)
+		if (FlxG.mouse.justPressed)
 		{
 			Config.roomLevel = 1;
 			Config.roomLevelName = AssetPaths.level1__png;
 			Config.roomFlavor = "bitter";
+
 			FlxG.switchState(new PlayState());
 		}
 	}
@@ -78,4 +73,12 @@ class StartState extends FlxState
 	private function sfxVolHandler() {}
 
 	private function musicVolHandler() {}
+
+	function screenSize()
+	{
+		if (FlxG.keys.justPressed.F)
+		{
+			FlxG.fullscreen = !FlxG.fullscreen;
+		}
+	}
 }

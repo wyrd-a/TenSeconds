@@ -79,6 +79,7 @@ class BattleSubState extends FlxSubState
 	var itemPower:Powerups;
 
 	var fadeToBlack:FlxSprite;
+	var vignette:FlxSprite;
 
 	override public function create()
 	{
@@ -137,15 +138,22 @@ class BattleSubState extends FlxSubState
 			subAssetLayer.kill();
 		}
 
-		this.weapon = new WeaponGroup();
-		add(this.weapon);
-
 		bomb = new Bomb(-50, -50);
 		add(bomb);
+
+		this.weapon = new WeaponGroup();
+		add(this.weapon);
 
 		layerCollisionName = Std.string(Config.roomLevel) + Std.string(randLayer);
 		assetCollision = new AssetCollider(0, 0, layerCollisionName);
 		add(assetCollision);
+
+		vignette = new FlxSprite(0, 0);
+		vignette.loadGraphic(AssetPaths.vignette__png);
+		vignette.scale.set(3, 3);
+		vignette.updateHitbox();
+		vignette.setPosition(0, 0);
+		add(vignette);
 
 		this.ui = new UI(0, 0);
 		add(this.ui);
@@ -160,6 +168,12 @@ class BattleSubState extends FlxSubState
 
 	override public function update(elapsed:Float)
 	{
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			var pauseSubState = new SelectSubState(0x992A2A2A);
+			openSubState(pauseSubState);
+		}
+
 		if (!bomb.startNewRoom)
 		{
 			// fade in
@@ -207,6 +221,7 @@ class BattleSubState extends FlxSubState
 		FlxG.collide(player, assetCollision);
 		if (FlxG.overlap(player, itemPower))
 		{
+			ui.textUp(itemPower);
 			itemPower.pickUp(player, itemPower);
 		}
 	}
@@ -214,7 +229,18 @@ class BattleSubState extends FlxSubState
 	/**Initiates a bunch of enemies and then chooses one to add to the game. Probably inefficient but its 2:27 am**/
 	function enemyCreation()
 	{
+		if (Config.roomLevel == 4)
+		{
+			noEnemy = 1;
+		}
+		else
+		{
+			// noEnemy = 1;
+			noEnemy = 1 + Math.round(0.8 * Math.random());
+		}
+
 		enemy = new Array<Dynamic>();
+
 		for (i in 0...noEnemy)
 		{
 			enemyArray = new Array<Dynamic>();
@@ -237,20 +263,43 @@ class BattleSubState extends FlxSubState
 			enemyArray[7] = gobbin;
 			enemyArray[8] = boss;
 			// Choose what enemies appear on which levels
-			switch Config.roomLevel
+			if (noEnemy == 1)
 			{
-				case 1:
-					enemyNum = Random.fromArray([0, 2, 5]);
-				case 2:
-					enemyNum = Random.fromArray([0, 1, 3, 7, 6]);
-
-				case 3:
-					enemyNum = Random.fromArray([1, 3, 4, 7]);
-
-				case 4:
-					enemyNum = 8;
+				switch (Config.roomLevel)
+				{
+					case 1:
+						enemyNum = Random.fromArray([0, 2, 5]);
+					case 2:
+						enemyNum = Random.fromArray([0, 1, 3, 7, 6]);
+					case 3:
+						enemyNum = Random.fromArray([1, 3, 4, 7]);
+					case 4:
+						enemyNum = 8;
+				}
+			}
+			else
+			{
+				switch (Config.roomLevel)
+				{
+					case 1:
+						if (i == 0)
+							enemyNum = 5;
+						else
+							enemyNum = 0;
+					case 2:
+						if (i == 0)
+							enemyNum = 6;
+						else
+							enemyNum = 3;
+					case 3:
+						if (i == 0)
+							enemyNum = 4;
+						else
+							enemyNum = 7;
+				}
 			}
 			this.enemy[i] = this.enemyArray[enemyNum]; // Put enemyNum here for game
+			enemy[i].health = enemy[i].health * Config.roomLevel;
 			this.enemy[i].x = FlxG.width / 2 - enemy[i].width / 2;
 			this.enemy[i].y = FlxG.height / 2 - enemy[i].height / 2;
 		}
@@ -267,7 +316,7 @@ class BattleSubState extends FlxSubState
 	/**Determine which door the player came out of and put them in the respective area**/
 	function positionPlayer(player:FlxSprite)
 	{
-		if (Config.roomDirection != null)
+		if ((Config.roomDirection != null) && (Config.roomLevel != 4))
 		{
 			switch Config.roomDirection
 			{
@@ -278,8 +327,12 @@ class BattleSubState extends FlxSubState
 				case "up":
 					player.setPosition(409, 456);
 				case "down":
-					player.setPosition(409, 53);
+					player.setPosition(409, 73);
 			}
+		}
+		else
+		{
+			player.setPosition(409, 456);
 		}
 	}
 }

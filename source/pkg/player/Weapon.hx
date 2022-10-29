@@ -12,9 +12,9 @@ import haxe.Timer;
 **/
 class Weapon extends FlxSprite
 {
-	var VEL:Float = 6; // How fast the weapon chases after the mouse
+	var VEL:Float = 7; // How fast the weapon chases after the mouse
 
-	public var CHARGE:Float = 400; // Speed weapon needs to reach before powering up
+	public var CHARGE:Float = 500; // Speed weapon needs to reach before powering up
 
 	public var DIST:Float = 75;
 	public var targetAngle:Float;

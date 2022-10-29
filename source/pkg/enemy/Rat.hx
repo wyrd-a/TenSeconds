@@ -13,7 +13,7 @@ class Rat extends Enemy
 {
 	public var theta:Float; // Used for rat charge attack
 
-	var attackSpeed:Float = 200;
+	var attackSpeed:Float = 300;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{

@@ -97,8 +97,9 @@ class Scarecrow extends Enemy
 	function hitBoxBounding()
 	{
 		updateHitbox();
-		this.height = 38;
+		this.height = 96;
 		this.width = 96;
-		this.offset.set(-40, -10);
+		this.offset.x += 10;
+		offset.y += 40;
 	}
 }
