@@ -22,8 +22,9 @@ class Projectile extends FlxSprite
 	var targetAngle:Float;
 	var projectileSpeed:Int;
 	var projectileFrames:Int;
+	var speedCheck:Bool;
 
-	public function new(x:Float = 0, y:Float = 0, projGraphic:String, projWidth, projHeight, projSpeed, projFrames)
+	public function new(x:Float = 0, y:Float = 0, projGraphic:String, projWidth, projHeight:Int, projSpeed:Int, projFrames:Int, speedKill:Bool)
 	{
 		super(x, y);
 		loadGraphic(projGraphic, true, projWidth, projHeight);
@@ -32,11 +33,16 @@ class Projectile extends FlxSprite
 		kill();
 		projectileSpeed = projSpeed;
 		projectileFrames = projFrames;
+		speedCheck = speedKill;
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		if (speedCheck)
+		{
+			velocity.set(velocity.x * 0.99, velocity.y * 0.99);
+		}
 	}
 
 	/**Fire a projectile at the player when the enemy says to**/
@@ -47,7 +53,7 @@ class Projectile extends FlxSprite
 			trace("firin mah lazer");
 			animation.add("run", [for (i in(0...projectileFrames)) i], animRate, false, false, false);
 			animation.play("run");
-			this.reset(enemy.x, enemy.y);
+			this.reset(enemy.x + 10, enemy.y + 10);
 			targetAngle = FlxAngle.angleBetween(this, player);
 			velocity.set(projectileSpeed * Math.cos(targetAngle), projectileSpeed * Math.sin(targetAngle));
 		}

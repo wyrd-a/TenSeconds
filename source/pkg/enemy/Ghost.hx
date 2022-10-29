@@ -35,6 +35,9 @@ class Ghost extends Enemy
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
+		this.width = 48;
+		this.height = 96;
+		// offset.set(-1, 1);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -77,6 +80,8 @@ class Ghost extends Enemy
 			this.y += origin.y * 3;
 			this.scale.set(3, 3);
 			this.updateHitbox();
+			this.width = 48;
+			this.height = 96;
 		}
 	}
 

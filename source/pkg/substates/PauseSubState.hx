@@ -24,7 +24,7 @@ class PauseSubState extends FlxSubState
 	override public function create()
 	{
 		super.create();
-		this.createButtons();
+		// this.createButtons();
 	}
 
 	private function quitHandler()

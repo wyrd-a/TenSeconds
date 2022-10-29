@@ -25,6 +25,7 @@ class WinSubState extends FlxSubState
 		winScreen.updateHitbox();
 		winScreen.setPosition(0, 0);
 		add(winScreen);
+		NGio.unlockMedal(APIcodes.MEDALONEID);
 	}
 
 	override public function update(elapsed:Float)

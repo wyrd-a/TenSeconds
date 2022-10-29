@@ -47,7 +47,7 @@ class Weapon extends FlxSprite
 		// targetAngle = angleControl(player);
 		targetAngle = FlxAngle.angleBetweenMouse(player, true) - 90;
 
-		if (!spunUp) // choose angular speed DOES NOT WORK IN SECOND QUADRANT???
+		if (!spunUp) // choose angular speed
 		{
 			if (angle > targetAngle)
 			{

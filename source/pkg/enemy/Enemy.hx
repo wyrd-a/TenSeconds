@@ -8,7 +8,11 @@ import flixel.math.FlxMath;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 import haxe.Timer;
+import openfl.utils.IAssetCache;
+import pkg.config.Config;
+import pkg.enemy.PathFind;
 import pkg.player.Player;
+import pkg.substates.BattleSubState;
 
 /**
 	This is the enemy. AI and damage dealing is handled here.
@@ -29,8 +33,10 @@ class Enemy extends FlxSprite
 
 	var attackTimer:Float = 0;
 
-	var targetX:Float;
-	var targetY:Float;
+	var targetPos:Array<Int>;
+	var pathFinder:PathFind;
+	var targX:Int = 0;
+	var targY:Int = 0;
 
 	var originalX:Float;
 	var originalY:Float;
@@ -51,6 +57,7 @@ class Enemy extends FlxSprite
 	public var projHeight:Int = 32;
 	public var projSpeed:Int = 200;
 	public var projFrames:Int = 1;
+	public var projDecay:Bool = false;
 
 	// immunity frames
 	var oldHealth:Float;
@@ -70,6 +77,9 @@ class Enemy extends FlxSprite
 		makeGraphic(64, 64, FlxColor.GREEN);
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
+
+		pathFinder = new PathFind(0, 0, Std.string(Config.roomLevel) + Std.string(BattleSubState.randLayer));
+		trace("Using layout #" + BattleSubState.randLayer);
 
 		hurtSound = FlxG.sound.load(AssetPaths.EnemyHurt2__wav);
 	}
@@ -186,41 +196,83 @@ class Enemy extends FlxSprite
 		}
 	}
 
-	/**Function that damages the first object. Should be called with FlxG.overlap()**/
+	/**Function that damages the first object. Should be called through FlxG.overlap()**/
 	function playerHurt(objA:Player, objB:FlxSprite):Void
 	{
 		objA.takeDamage();
 	}
 
-	/**Move the enemy. Positive vel moves towards player, negative vel moves away.**/
+	/**Move the enemy towards the player at speed vel.**/
 	function approach(player:FlxSprite, vel:Float)
 	{
-		if (Math.abs(player.x - x) > Math.abs(player.y - y)) // Is the player further away in x or y
+		animFacing(player);
+
+		velocity.set(0, 0);
+		targetPos = pathFinder.pathFinding(player, this);
+		if (targetPos[0] != null) // put some grid-adherence algorithm in here
 		{
-			velocity.y = 0;
-			if (player.x > x) // Move positive or negative x
+			if (targetPos[0] == targetPos[2]) // if start x equals end x
 			{
-				velocity.x = vel;
-				animation.play("right");
+				targY = targetPos[3];
+				targX = 0;
+				if (targetPos[1] > targetPos[3])
+				{
+					velocity.y = -1 * vel;
+				}
+				else
+				{
+					velocity.y = vel;
+				}
+				if (targY * 48 + 1 == Std.int(y))
+				{
+					targY = 0;
+				}
 			}
 			else
 			{
-				velocity.x = -1 * vel;
-				animation.play("left");
+				targX = targetPos[2];
+				targY = 0;
+				if (targetPos[0] > targetPos[2])
+				{
+					velocity.x = -1 * vel;
+				}
+				else
+				{
+					velocity.x = vel;
+				}
+				if (targX * 48 + 1 == Std.int(x))
+				{
+					targX = 0;
+				}
 			}
 		}
-		else
-		{
-			velocity.x = 0;
-			if (player.y > y) // move positive or negative y
+		/*if (targetPos[0] != null)
 			{
-				velocity.y = vel;
-			}
-			else
-			{
-				velocity.y = -1 * vel;
-			}
-		}
+				if (Math.abs(targetPos[0] - (x)) > Math.abs(targetPos[1] - (y))) // Is the player further away in x or y
+				{
+					velocity.y = 0;
+					if (targetPos[0] > x) // Move positive or negative x
+					{
+						velocity.x = vel;
+					}
+					else
+					{
+						velocity.x = -1 * vel;
+					}
+				}
+				else
+				{
+					velocity.x = 0;
+					if (targetPos[1] > y) // move positive or negative y
+					{
+						velocity.y = vel;
+					}
+					else
+					{
+						velocity.y = -1 * vel;
+					}
+				}
+		}*/
 	}
 
 	/**Determine if the enemy should run away from the player. Not sure if this code works.**/
@@ -255,7 +307,7 @@ class Enemy extends FlxSprite
 		{
 			hurtSound.play();
 			iframes = true;
-			health -= 1;
+			health -= Config.playerDamage;
 		}
 	}
 
@@ -285,5 +337,13 @@ class Enemy extends FlxSprite
 				alpha = 0.5;
 			}
 		}
+	}
+
+	function animFacing(player:FlxSprite)
+	{
+		if (player.x + (player.width / 2) > this.x + (this.width / 2))
+			animation.play("right");
+		else
+			animation.play("left");
 	}
 }

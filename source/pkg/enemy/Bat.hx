@@ -48,7 +48,6 @@ class Bat extends Enemy
 	public function aiWorkings(player:FlxSprite)
 	{
 		this.trackPlayer(player);
-		fireProjectile = false;
 		if (isAttacking)
 		{
 			attack(player);
@@ -62,6 +61,7 @@ class Bat extends Enemy
 		chargeTimer = 0;
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{
+			animFacing(player);
 			attackTimer = Timer.stamp();
 			// Change hitbox here
 			theta = FlxAngle.angleBetween(this, player);
@@ -75,7 +75,6 @@ class Bat extends Enemy
 			attackTimer = 0;
 			// Restore sprite to initial configuration here
 			velocity.set(0, 0);
-			fireProjectile = true;
 		}
 	}
 

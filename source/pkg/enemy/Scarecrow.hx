@@ -98,6 +98,7 @@ class Scarecrow extends Enemy
 	{
 		updateHitbox();
 		this.height = 38;
+		this.width = 96;
 		this.offset.set(-40, -10);
 	}
 }

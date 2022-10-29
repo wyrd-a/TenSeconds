@@ -30,15 +30,16 @@ class PlayState extends FlxState
 
 	override public function create()
 	{
+		// FlxG.sound.volume = 0;
 		super.create();
-		// chooseMusic();
+		chooseMusic();
 		// By default, just go to battle substate
 		this.persistentDraw = true;
 		this.persistentUpdate = true;
 		this.destroySubStates = false;
 
 		this.battleSubState = new BattleSubState();
-		this.pauseSubState = new PauseSubState();
+		pauseSubState = new PauseSubState(0x32808080);
 		loseSubState = new LoseSubState();
 		winSubState = new WinSubState();
 

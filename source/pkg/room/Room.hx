@@ -39,14 +39,13 @@ class Room extends FlxSpriteGroup
 	{
 		// Default room is level 1
 		var trueAssetPath:String;
-		assetPath = Config.roomLevelName;
 		if (assetPath != null)
 		{
 			trueAssetPath = assetPath;
 		}
 		else
 		{
-			trueAssetPath = AssetPaths.boss_room__png;
+			trueAssetPath = AssetPaths.level1__png;
 		}
 
 		this.roomBg = new FlxSprite(trueAssetPath);
@@ -99,16 +98,17 @@ class Room extends FlxSpriteGroup
 	{
 		this.obstacleSortGroup = new FlxSpriteGroup();
 		this.obstacles = [
-			new Obstacle(200, 200, "whatever"),
-			new Obstacle(300, 300, "whatever"),
-			new Obstacle(400, 400, "whatever")
+			// Portion where new obstacles are created, need to change number for different layouts
+			// new Obstacle(390, 432, "whatever"),
+			new Obstacle(0, 0, "whatever"),
+			new Obstacle(0, 0, "whatever")
 		];
 		this.nonObstacles = spritesToSortWithObstacles;
 
 		for (index => obstacle in this.obstacles)
 		{
 			obstacle.immovable = true;
-			// this.obstacleSortGroup.add(obstacle); // Add obstacles to room
+			this.obstacleSortGroup.add(obstacle); // Add obstacles to room
 		}
 
 		for (index => sprite in spritesToSortWithObstacles)
@@ -128,7 +128,8 @@ class Room extends FlxSpriteGroup
 			for (index => obstacle in this.obstacles)
 			{
 				obstacle.height = obstacle.graphic.height * obstacle.hitBoxHeightProportion;
-				obstacle.offset.set(-obstacle.graphic.width, obstacle.graphic.height / 2);
+				obstacle.width = 30;
+				obstacle.offset.set(-obstacle.graphic.width + 12, obstacle.graphic.height / 2);
 				FlxG.collide(obstacle, nonObstacle);
 			}
 		}

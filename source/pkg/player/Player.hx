@@ -19,9 +19,6 @@ class Player extends FlxSprite
 	var screenShaker:Bool;
 	var screenTimer:Float = 0;
 
-	// immunity stuff
-	var oldHealth:Float;
-
 	// Player SFX
 	var hurtSound:FlxSound;
 	var stepSound:FlxSound;
@@ -32,7 +29,6 @@ class Player extends FlxSprite
 	var flashTimer:Float = 0;
 
 	// Track UI health
-	public var currentHealth:Float;
 	public var maxHealth:Float = 5;
 
 	// animation stuff
@@ -48,6 +44,7 @@ class Player extends FlxSprite
 		createAnimations();
 
 		// Set player health
+		maxHealth = Config.playerMax;
 		if (Config.playerHealth == null)
 		{
 			health = maxHealth;
@@ -56,8 +53,6 @@ class Player extends FlxSprite
 		{
 			health = Config.playerHealth;
 		}
-		oldHealth = health; // for tracking i-frames
-		currentHealth = health;
 
 		// Sound loading
 		hurtSound = FlxG.sound.load(AssetPaths.PlayerHurt1__wav);
@@ -70,6 +65,8 @@ class Player extends FlxSprite
 		// boundToBorder();
 		super.update(elapsed);
 		deathCheck();
+		health = Config.playerHealth;
+		maxHealth = Config.playerMax;
 	}
 
 	function move()
@@ -210,7 +207,7 @@ class Player extends FlxSprite
 		{
 			hurtSound.play(true);
 			iframes = true;
-			health -= 1;
+			Config.playerHealth -= 1;
 		}
 	}
 

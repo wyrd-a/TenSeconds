@@ -13,7 +13,7 @@ class Rat extends Enemy
 {
 	public var theta:Float; // Used for rat charge attack
 
-	var attackSpeed:Float = 150;
+	var attackSpeed:Float = 200;
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
@@ -24,7 +24,7 @@ class Rat extends Enemy
 		attackCD = 2;
 		chargeCD = 2;
 		iframeCD = 2;
-		maxSpeed = 60;
+		maxSpeed = 80;
 		aggroRange = 100;
 		health = 5;
 
@@ -35,6 +35,8 @@ class Rat extends Enemy
 		animation.play("right");
 		setGraphicSize(Std.int(3 * width), 0);
 		updateHitbox();
+		width = 90;
+		height = 80;
 	}
 
 	override public function update(elapsed:Float):Void
@@ -59,6 +61,7 @@ class Rat extends Enemy
 		chargeTimer = 0;
 		if (attackTimer == 0) // Only runs once, need in overwritten functions
 		{
+			animFacing(player);
 			attackTimer = Timer.stamp();
 			// Change hitbox here
 			theta = FlxAngle.angleBetween(this, player);

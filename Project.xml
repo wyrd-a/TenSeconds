@@ -39,6 +39,11 @@
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
 
+	<haxelib name="astar" />
+
+	<haxelib name="newgrounds" />
+	<haxelib name="random" />
+	>
 	<!--In case you want to use the ui package-->
 	<!--<haxelib name="flixel-ui" />-->
 

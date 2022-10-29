@@ -35,8 +35,9 @@ class Boss extends Enemy
 		projGraphic = AssetPaths.bossBomb__png;
 		projWidth = 21;
 		projHeight = 21;
-		projSpeed = 0;
+		projSpeed = 100;
 		projFrames = 11;
+		projDecay = true;
 
 		oldHealth = health; // for tracking i-frames
 

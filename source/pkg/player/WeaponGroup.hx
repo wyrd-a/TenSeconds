@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import pkg.config.Config;
 import pkg.enemy.Enemy;
 
 /**Real jank way of moving hitbox off of weapon to tip of weapon, but hey it works.**/
@@ -13,6 +14,8 @@ class WeaponGroup extends FlxSpriteGroup
 	var weapon:Weapon;
 	var weaponBox:FlxSprite;
 	var wbDist:Float = 100;
+
+	var damageCounter:FlxText;
 
 	var weaponAngle:FlxText;
 	var targetAngle:FlxText;
@@ -26,16 +29,26 @@ class WeaponGroup extends FlxSpriteGroup
 		add(weaponBox);
 		weaponBox.alpha = 0;
 
+		damageCounter = new FlxText(0, 0, 0, "1", 16);
+		damageCounter.alpha = 0;
+		add(damageCounter);
+
 		weaponAngle = new FlxText(0, 0);
 		targetAngle = new FlxText(0, 20);
-		add(weaponAngle);
-		add(targetAngle);
+		// add(weaponAngle);
+		// add(targetAngle);
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		weaponAngle.text = "Weapon Angle: " + Std.string(weapon.angle);
 		targetAngle.text = "Target Angle: " + Std.string(weapon.targetAngle);
+
+		if (damageCounter.alpha > 0)
+		{
+			damageCounter.alpha -= 0.01;
+		}
+
 		super.update(elapsed);
 	}
 
@@ -49,7 +62,7 @@ class WeaponGroup extends FlxSpriteGroup
 
 	function dealDamage(enemy:FlxSprite)
 	{
-		if (Math.abs(weapon.angularVelocity) > weapon.CHARGE)
+		if (weapon.spunUp)
 		{
 			FlxG.overlap(enemy, weaponBox, hurtEnemy); // hurt the enemy!
 		}
@@ -57,9 +70,14 @@ class WeaponGroup extends FlxSpriteGroup
 
 	function hurtEnemy(objA:Enemy, objB:FlxSprite):Void
 	{
-		objA.takeDamage();
-		weapon.spunUp = false;
-		weapon.angularVelocity = 0;
-		// play SFX
+		if (!objA.iframes)
+		{
+			damageCounter.reset(weaponBox.x, weaponBox.y - 50);
+			damageCounter.alpha = 1;
+			damageCounter.text = Std.string(Config.playerDamage) + "!";
+			objA.takeDamage();
+			weapon.spunUp = false;
+			weapon.angularVelocity = -0.5 * weapon.angularVelocity;
+		}
 	}
 }

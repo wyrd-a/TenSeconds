@@ -3,6 +3,8 @@ package pkg.states;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.system.FlxAssets.FlxSoundAsset;
+import flixel.system.FlxSound;
 import flixel.ui.FlxButton;
 import pkg.config.Config;
 
@@ -14,30 +16,41 @@ class StartState extends FlxState
 	private var startButton:FlxButton;
 	private var sfxVolButton:FlxButton;
 	private var musicVolButton:FlxButton;
+	var startMusic:FlxSound;
 
-	override public function create()
+	override public function create():Void
 	{
-		FlxG.mouse.load(AssetPaths.crosshair__png);
 		super.create();
 		var startBg = new FlxSprite(0, 0);
-		startBg.loadGraphic(AssetPaths.startScreen__png);
+		startBg.loadGraphic(AssetPaths.splashScreen__png);
 
 		add(startBg);
-		startBg.scale.set(3, 3);
+		startBg.scale.set(0.5, 0.5);
 		startBg.updateHitbox();
 		startBg.setPosition(0, 0);
 		// this.createButtons();
+		startMusic = new FlxSound();
+		startMusic = FlxG.sound.load(AssetPaths.Medly_of_Madness__ogg);
+		startMusic.play(false);
+		startMusic.resume();
+
+		if (startMusic.playing)
+		{
+			trace("playing music");
+		}
+		// FlxG.sound.playMusic(AssetPaths.Medly_of_Madness__mp3, 1, true);
 	}
 
 	override public function update(elapsed:Float)
 	{
-		if (FlxG.mouse.pressed)
+		super.update(elapsed);
+		if (FlxG.keys.pressed.SPACE)
 		{
 			Config.roomLevel = 1;
 			Config.roomLevelName = AssetPaths.level1__png;
+			Config.roomFlavor = "bitter";
 			FlxG.switchState(new PlayState());
 		}
-		super.update(elapsed);
 	}
 
 	private function createButtons()

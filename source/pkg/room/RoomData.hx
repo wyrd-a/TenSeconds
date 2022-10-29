@@ -25,35 +25,25 @@ class RoomData extends FlxSpriteGroup
 	public function new(x:Float = 0, y:Float = 0)
 	{
 		super(x, y);
-		randPower = Math.floor(3 * Math.random());
+		randPower = Math.floor(4 * Math.random());
 		switch (randPower)
 		{
+			case 0:
+				powerUpName = "strong";
 			case 1:
-				powerUpName = "Sweet";
+				powerUpName = "health";
 			case 2:
-				powerUpName = "Savory";
+				powerUpName = "lifeup";
 			case 3:
-				powerUpName = "Spicy";
-			case 4:
-				powerUpName = "Bitter";
+				powerUpName = "bitter";
 		}
-		powerUp = new FlxSprite(x, y);
-		powerUp.loadGraphic(AssetPaths.items__png, true, 27, 14);
-		choosePowerUpGraphic();
-		// powerUp.animation.play(powerUpName);
-		// add(powerUp);
-
-		powerUpText = new FlxText(x, y + 16, 0, "Flavor");
-		powerUpText.color = FlxColor.BLACK;
-		powerUpText.text = "Flavor: " + powerUpName;
-		// add(powerUpText);
 
 		roomType = new FlxText(x, y);
 		roomType.color = FlxColor.BLACK;
 		switch (Config.roomLevel)
 		{
 			case 1: // if current room is level 1
-				if (Math.random() > advancingDifficulty)
+				if (Math.random() < Config.difficulty)
 				{
 					roomLevelName = AssetPaths.level2__png;
 					roomLevelNumber = 2;
@@ -66,7 +56,7 @@ class RoomData extends FlxSpriteGroup
 					roomType.text = "Difficulty: Easy";
 				}
 			case 2:
-				if (Math.random() > advancingDifficulty)
+				if (Math.random() < Config.difficulty)
 				{
 					roomLevelName = AssetPaths.level3__png;
 					roomLevelNumber = 3;
@@ -80,11 +70,12 @@ class RoomData extends FlxSpriteGroup
 				}
 			case 3:
 				{
-					if (Math.random() > advancingDifficulty)
+					if (Math.random() < Config.difficulty)
 					{
 						roomLevelName = AssetPaths.boss_room__png;
 						roomLevelNumber = 4;
 						roomType.text = "Difficulty: BOSS";
+						powerUpName = "boss";
 					}
 					else
 					{
@@ -94,14 +85,6 @@ class RoomData extends FlxSpriteGroup
 					}
 				}
 		}
-		add(roomType);
-	}
-
-	function choosePowerUpGraphic()
-	{
-		powerUp.animation.add("Sweet", [1]);
-		powerUp.animation.add("Savory", [2]);
-		powerUp.animation.add("Spicy", [0]);
-		powerUp.animation.add("Bitter", [3]);
+		// add(roomType);
 	}
 }
